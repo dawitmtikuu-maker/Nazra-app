@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="am">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nazra - Adama & Regional Marketplace</title>
+  <style>
+    body { font-family: sans-serif; margin: 0; background: #f4f6f5; color: #1b2a22; }
+    header { background: #0f5132; color: white; padding: 16px; display: flex; justify-content: space-between; align-items: center; }
+    .logo { font-size: 22px; font-weight: bold; }
+    .btn { background: #198754; color: white; border: none; padding: 10px 14px; border-radius: 8px; font-weight: bold; cursor: pointer; }
+    .hero { background: #0f5132; color: white; padding: 20px 16px 28px; }
+    .search-box { background: white; padding: 12px; border-radius: 12px; margin-top: 14px; display: flex; flex-direction: column; gap: 10px; }
+    input, select { padding: 12px; border: 1px solid #ddd; border-radius: 8px; font-size: 15px; }
+    .section { padding: 16px; }
+    .card { background: white; padding: 14px; border-radius: 12px; margin-bottom: 12px; box-shadow: 0 2px 6px rgba(0,0,0,0.06); }
+    .price { color: #0f5132; font-weight: bold; font-size: 17px; }
+    .city { font-size: 13px; color: #666; }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">N Nazra</div>
+    <button class="btn" onclick="alert('ማስታወቂያ መለጠፊያ ቅጽ በቅርቡ ይከፈታል!')">+ Post Ad</button>
+  </header>
+  <div class="hero">
+    <h2 style="margin:0 0 6px;">የአዳማ እና ክልል ከተሞች ማርኬትፕሌስ</h2>
+    <p style="margin:0; opacity:0.9; font-size:14px;">ይግዙ፣ ይሽጡ፣ በቀጥታ ለሻጩ ይደውሉ።</p>
+    <div class="search-box">
+      <input type="text" placeholder="ስልክ፣ መኪና፣ የቤት እቃ ይፈልጉ..." />
+      <select>
+        <option>Adama (አዳማ)</option>
+        <option>Bishoftu (ቢሾፍቱ)</option>
+        <option>Mojo (ሞጆ)</option>
+        <option>Asella (አሰላ)</option>
+        <option>Shashamane (ሻሸመኔ)</option>
+      </select>
+      <button class="btn" style="width:100%;">ፈልግ / Search</button>
+    </div>
+  </div>
+  <div class="section">
+    <h3>የቅርብ ጊዜ ማስታወቂያዎች</h3>
+    <div class="card">
+      <div><strong>Samsung Galaxy S23 Ultra</strong></div>
+      <div class="price">68,000 ETB</div>
+      <div class="city">📍 Adama • በቀጥታ ይደውሉ</div>
+    </div>
+    <div class="card">
+      <div><strong>Toyota Corolla 2015</strong></div>
+      <div class="price">1,850,000 ETB</div>
+      <div class="city">📍 Adama • በቀጥታ ይደውሉ</div>
+    </div>
+  </div>
+</body>
+</html>
