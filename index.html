@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Nazra — Adama Marketplace</title>
+  <style>
+    :root {
+      --bg: #f4f6f8;
+      --surface: #ffffff;
+      --text: #111827;
+      --muted: #6b7280;
+      --primary: #0d9488;
+      --primary-dark: #0f766e;
+      --primary-soft: #ccfbf1;
+      --border: #e5e7eb;
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 84px;
+    }
+
+    /* App Top Header */
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 12px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--primary);
+      letter-spacing: -0.3px;
+    }
+
+    .location-pill {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      background: var(--bg);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 999px;
+    }
+
+    /* Quick Category Strip */
+    .section {
+      padding: 14px 16px 4px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .link-btn {
+      background: none;
+      border: none;
+      color: var(--primary);
+      font-size: 13px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .quick-strip {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+
+    .quick-strip::-webkit-scrollbar {
+      display: none;
+    }
+
+    .chip {
+      flex: 0 0 auto;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .chip.active {
+      background: var(--primary);
+      color: #ffffff;
+      border-color: var(--primary);
+    }
+
+    /* Jiji-Style Category Grid */
+    .category-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .cat-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 12px 8px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform 0.12s ease, border-color 0.12s ease;
+    }
+
+    .cat-card:active {
+      transform: scale(0.97);
+    }
+
+    .cat-card.selected {
+      border-color: var(--primary);
+      background: #f0fdfa;
+    }
+
+    .cat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      background: var(--primary-soft);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .cat-name {
+      font-size: 12px;
+      font-weight: 700;
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    .cat-sub-count {
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    /* Active Category Subcategories Panel */
+    .subcat-panel {
+      margin: 12px 16px 0;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 14px;
+    }
+
+    .subcat-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .subcat-title {
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .subcat-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .subcat-pill {
+      padding: 7px 12px;
+      border-radius: 10px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text);
+      cursor: pointer;
+    }
+
+    .subcat-pill.active {
+      background: var(--primary-soft);
+      border-color: var(--primary);
+      color: var(--primary-dark);
+    }
+
+    .status-note {
+      margin: 10px 16px 0;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    /* Bottom App Navigation */
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      background: var(--surface);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      padding: 8px 0 10px;
+      z-index: 20;
+    }
+
+    .nav-btn {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 3px;
+      font-size: 11px;
+      font-weight: 600;
+      color: var(--muted);
+      cursor: pointer;
+    }
+
+    .nav-btn.active {
+      color: var(--primary);
+    }
+
+    .nav-icon {
+      font-size: 18px;
+    }
+  </style>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <span>Nazra</span>
+    </div>
+    <div class="location-pill">Adama (Nazret)</div>
+  </header>
+
+  <section class="section">
+    <div class="section-head">
+      <h2 class="section-title">Browse by Category</h2>
+      <button class="link-btn" id="reset-filter-btn" type="button">All Items</button>
+    </div>
+
+    <div class="quick-strip" id="quick-category-strip"></div>
+
+    <div class="category-grid" id="category-grid"></div>
+  </section>
+
+  <section class="subcat-panel" id="subcat-panel">
+    <div class="subcat-header">
+      <span class="subcat-title" id="subcat-title">Select a category</span>
+      <span class="cat-sub-count" id="subcat-count"></span>
+    </div>
+    <div class="subcat-list" id="subcat-list"></div>
+  </section>
+
+  <p class="status-note" id="selection-summary">Showing all categories.</p>
+
+  <nav class="bottom-nav" aria-label="Main navigation">
+    <button class="nav-btn active" type="button">
+      <span class="nav-icon">🏠</span>
+      <span>Home</span>
+    </button>
+    <button class="nav-btn" type="button">
+      <span class="nav-icon">🗂️</span>
+      <span>Categories</span>
+    </button>
+    <button class="nav-btn" type="button">
+      <span class="nav-icon">➕</span>
+      <span>Post Ad</span>
+    </button>
+    <button class="nav-btn" type="button">
+      <span class="nav-icon">👤</span>
+      <span>Account</span>
+    </button>
+  </nav>
+
+  <script>
+    const DEFAULT_CATEGORIES = [
+      {
+        id: "vehicles",
+        name: "Vehicles",
+        icon: "🚗",
+        subcategories: ["Cars", "Buses & Vans", "Motorcycles & Scooters", "Trucks & Trailers", "Auto Parts & Accessories"]
+      },
+      {
+        id: "property",
+        name: "Property",
+        icon: "🏠",
+        subcategories: ["Houses & Apartments for Rent", "Houses & Apartments for Sale", "Land & Plots", "Commercial Space", "Short Let & Rooms"]
+      },
+      {
+        id: "phones",
+        name: "Phones & Tablets",
+        icon: "📱",
+        subcategories: ["Smartphones", "Feature Phones", "Tablets", "Chargers & Power Banks", "Cases, Screen Protectors & Parts"]
+      },
+      {
+        id: "electronics",
+        name: "Electronics",
+        icon: "💻",
+        subcategories: ["Laptops & Computers", "TVs & Audio", "Gaming Consoles & Games", "Cameras & Accessories", "Appliances"]
+      },
+      {
+        id: "home-furniture",
+        name: "Home & Furniture",
+        icon: "🛋️",
+        subcategories: ["Sofas & Living Room", "Beds & Mattresses", "Dining & Kitchen", "Wardrobes & Storage", "Decor & Lighting"]
+      },
+      {
+        id: "fashion-beauty",
+        name: "Fashion & Beauty",
+        icon: "👗",
+        subcategories: ["Men's Clothing & Shoes", "Women's Clothing & Shoes", "Bags & Accessories", "Watches & Jewelry", "Skincare, Hair & Fragrance"]
+      },
+      {
+        id: "jobs",
+        name: "Jobs",
+        icon: "💼",
+        subcategories: ["Sales & Retail", "Drivers & Delivery", "Hospitality & Customer Service", "Tech & Office", "Part-Time & Freelance"]
+      },
+      {
+        id: "services",
+        name: "Services",
+        icon: "🛠️",
+        subcategories: ["Phone & Laptop Repair", "Home Cleaning & Moving", "Plumbing & Electrical", "Event & Photography", "Tutoring & Lessons"]
+      },
+      {
+        id: "babies-kids",
+        name: "Babies & Kids",
+        icon: "🧸",
+        subcategories: ["Baby Gear & Strollers", "Kids Clothing & Shoes", "Toys & Games", "Cribs & Nursery", "School Supplies"]
+      },
+      {
+        id: "animals-pets",
+        name: "Animals & Pets",
+        icon: "🐾",
+        subcategories: ["Livestock & Poultry", "Dogs & Cats", "Birds & Fish", "Pet Food & Supplies", "Veterinary Care"]
+      },
+      {
+        id: "agriculture-food",
+        name: "Agriculture & Food",
+        icon: "🌾",
+        subcategories: ["Grains, Teff & Pulses", "Fruits & Vegetables", "Cooking Oils, Spices & Drinks", "Farming Tools & Inputs", "Bulk Wholesale"]
+      },
+      {
+        id: "sports-hobbies",
+        name: "Sports & Hobbies",
+        icon: "⚽",
+        subcategories: ["Fitness & Gym Gear", "Football & Team Sports", "Bicycles & Scooters", "Books & Instruments", "Pool, Board & Outdoor Games"]
+      }
+    ];
+
+    let categories = DEFAULT_CATEGORIES.slice();
+    let selectedCategoryId = null;
+    let selectedSubcategory = null;
+
+    function normalizeCategories(raw) {
+      const list = Array.isArray(raw) ? raw : (raw && Array.isArray(raw.categories) ? raw.categories : null);
+      if (!list || list.length === 0) return DEFAULT_CATEGORIES.slice();
+
+      return list.map((item, idx) => {
+        if (typeof item === "string") {
+          return {
+            id: `cat-${idx}`,
+            name: item,
+            icon: "📦",
+            subcategories: ["All in " + item]
+          };
+        }
+        const subs = Array.isArray(item.subcategories)
+          ? item.subcategories
+          : Array.isArray(item.subs)
+            ? item.subs
+            : ["All in " + (item.name || "Category")];
+
+        return {
+          id: String(item.id || item.slug || `cat-${idx}`),
+          name: String(item.name || item.title || `Category ${idx + 1}`),
+          icon: String(item.icon || item.emoji || "📦"),
+          subcategories: subs.map(s => (typeof s === "string" ? s : (s.name || String(s))))
+        };
+      });
+    }
+
+    function renderCategories() {
+      const strip = document.getElementById("quick-category-strip");
+      const grid = document.getElementById("category-grid");
+      const panel = document.getElementById("subcat-panel");
+      const subTitle = document.getElementById("subcat-title");
+      const subCount = document.getElementById("subcat-count");
+      const subList = document.getElementById("subcat-list");
+      const summary = document.getElementById("selection-summary");
+
+      strip.innerHTML = "";
+      grid.innerHTML = "";
+
+      const allChip = document.createElement("button");
+      allChip.type = "button";
+      allChip.className = "chip" + (selectedCategoryId === null ? " active" : "");
+      allChip.textContent = "All Categories";
+      allChip.onclick = () => {
+        selectedCategoryId = null;
+        selectedSubcategory = null;
+        renderCategories();
+      };
+      strip.appendChild(allChip);
+
+      categories.forEach(cat => {
+        const chip = document.createElement("button");
+        chip.type = "button";
+        chip.className = "chip" + (selectedCategoryId === cat.id ? " active" : "");
+        chip.textContent = `${cat.icon} ${cat.name}`;
+        chip.onclick = () => selectCategory(cat.id);
+        strip.appendChild(chip);
+
+        const card = document.createElement("button");
+        card.type = "button";
+        card.className = "cat-card" + (selectedCategoryId === cat.id ? " selected" : "");
+        card.innerHTML = `
+          <div class="cat-icon">${cat.icon}</div>
+          <div class="cat-name">${cat.name}</div>
+          <div class="cat-sub-count">${cat.subcategories.length} types</div>
+        `;
+        card.onclick = () => selectCategory(cat.id);
+        grid.appendChild(card);
+      });
+
+      const activeCat = categories.find(c => c.id === selectedCategoryId) || categories[0];
+      if (activeCat) {
+        panel.style.display = "block";
+        subTitle.textContent = `${activeCat.icon} ${activeCat.name}`;
+        subCount.textContent = `${activeCat.subcategories.length} subcategories`;
+        subList.innerHTML = "";
+
+        activeCat.subcategories.forEach(sub => {
+          const pill = document.createElement("button");
+          pill.type = "button";
+          pill.className = "subcat-pill" + (selectedSubcategory === sub ? " active" : "");
+          pill.textContent = sub;
+          pill.onclick = () => {
+            selectedCategoryId = activeCat.id;
+            selectedSubcategory = selectedSubcategory === sub ? null : sub;
+            renderCategories();
+          };
+          subList.appendChild(pill);
+        });
+      }
+
+      if (selectedCategoryId && selectedSubcategory) {
+        const catObj = categories.find(c => c.id === selectedCategoryId);
+        summary.textContent = `Selected: ${catObj ? catObj.name : ""} → ${selectedSubcategory}`;
+      } else if (selectedCategoryId) {
+        const catObj = categories.find(c => c.id === selectedCategoryId);
+        summary.textContent = `Selected category: ${catObj ? catObj.name : ""}`;
+      } else {
+        summary.textContent = `Showing all ${categories.length} marketplace categories.`;
+      }
+    }
+
+    function selectCategory(id) {
+      if (selectedCategoryId === id) {
+        selectedCategoryId = null;
+        selectedSubcategory = null;
+      } else {
+        selectedCategoryId = id;
+        selectedSubcategory = null;
+      }
+      renderCategories();
+    }
+
+    document.getElementById("reset-filter-btn").onclick = () => {
+      selectedCategoryId = null;
+      selectedSubcategory = null;
+      renderCategories();
+    };
+
+    renderCategories();
+
+    fetch("categories.json", { cache: "no-store" })
+      .then(res => (res.ok ? res.json() : null))
+      .then(data => {
+        if (data) {
+          categories = normalizeCategories(data);
+          renderCategories();
+        }
+      })
+      .catch(() => {
+        // Keeps DEFAULT_CATEGORIES when offline or if categories.json isn't present yet
+      });
+  </script>
+</body>
+</html>
