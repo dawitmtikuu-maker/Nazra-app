@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nazra — Jiji-Style Adama Marketplace</title>
+  <style>
+    :root {
+      --jj-green: #00b53f;
+      --jj-green-dark: #009432;
+      --jj-orange: #ff9900;
+      --bg: #f2f4f7;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --danger: #dc2626;
+      --border: #e5e7eb;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      padding-bottom: 48px;
+    }
+
+    /* Sticky Jiji-style Header */
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: var(--jj-green);
+      color: #fff;
+      padding: 12px 14px 14px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .header-top {
+      max-width: 980px;
+      margin: 0 auto 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand {
+      font-size: 20px;
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .brand span {
+      background: rgba(255, 255, 255, 0.18);
+      font-size: 11px;
+      padding: 3px 8px;
+      border-radius: 999px;
+      margin-left: 6px;
+      font-weight: 600;
+    }
+
+    .btn-post-top {
+      background: var(--jj-orange);
+      color: #111827;
+      border: none;
+      border-radius: 8px;
+      padding: 8px 13px;
+      font-weight: 800;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .search-wrap {
+      max-width: 980px;
+      margin: 0 auto;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 10px 14px;
+      border: none;
+      border-radius: 8px;
+      font-size: 15px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+    }
+
+    /* Category Pills */
+    .cats-bar {
+      max-width: 980px;
+      margin: 12px auto 0;
+      padding: 0 14px;
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .cats-bar::-webkit-scrollbar { display: none; }
+
+    .cat-pill {
+      background: #fff;
+      color: var(--text);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 7px 13px;
+      font-size: 13px;
+      font-weight: 600;
+      white-space: nowrap;
+      cursor: pointer;
+    }
+
+    .cat-pill.active {
+      background: var(--jj-green);
+      color: #fff;
+      border-color: var(--jj-green);
+    }
+
+    .container {
+      max-width: 980px;
+      margin: 14px auto 0;
+      padding: 0 14px;
+    }
+
+    .panel {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 16px;
+      box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+    }
+
+    .panel-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .panel-header h2 {
+      margin: 0;
+      font-size: 18px;
+    }
+
+    .muted { color: var(--muted); font-size: 12px; }
+    .req { color: var(--danger); }
+
+    label {
+      display: block;
+      font-weight: 700;
+      font-size: 13px;
+      margin: 12px 0 5px;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="file"],
+    select {
+      width: 100%;
+      padding: 10px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      font-size: 15px;
+      background: #fff;
+    }
+
+    .preview-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 8px;
+    }
+
+    .preview-row img {
+      width: 78px;
+      height: 78px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+    }
+
+    .extra-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 8px;
+      align-items: center;
+    }
+
+    .extra-row input { flex: 1; }
+
+    .btn {
+      border: none;
+      border-radius: 8px;
+      padding: 9px 13px;
+      font-weight: 700;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .btn-light {
+      background: #e5e7eb;
+      color: var(--text);
+    }
+
+    .btn-light:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    .btn-submit {
+      width: 100%;
+      background: var(--jj-green);
+      color: #fff;
+      padding: 13px;
+      font-size: 15px;
+      margin-top: 14px;
+    }
+
+    .btn-submit:hover { background: var(--jj-green-dark); }
+
+    .pay-box {
+      margin-top: 14px;
+      background: #f0fdf4;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      padding: 12px;
+    }
+
+    .pay-title {
+      font-weight: 800;
+      font-size: 14px;
+      color: #166534;
+      margin-bottom: 4px;
+    }
+
+    .error-text {
+      color: var(--danger);
+      font-weight: 700;
+      font-size: 13px;
+      margin-top: 10px;
+    }
+
+    /* Jiji-Style Grid */
+    .section-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .section-meta h2 {
+      margin: 0;
+      font-size: 17px;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    @media (min-width: 700px) {
+      .grid {
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+      }
+    }
+
+    .ad-tile {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      cursor: pointer;
+      transition: transform 0.12s ease;
+    }
+
+    .ad-tile:hover { transform: translateY(-2px); }
+
+    .ad-thumb-wrap {
+      position: relative;
+      aspect-ratio: 4 / 3;
+      background: #e5e7eb;
+    }
+
+    .ad-thumb-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-badge {
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: rgba(17, 24, 39, 0.75);
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 6px;
+    }
+
+    .ad-body {
+      padding: 9px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+    }
+
+    .ad-price {
+      color: var(--jj-green-dark);
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .ad-name {
+      font-size: 13px;
+      font-weight: 600;
+      margin: 3px 0 6px;
+      line-height: 1.3;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .ad-foot {
+      margin-top: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .mini-cat {
+      background: #f3f4f6;
+      padding: 2px 7px;
+      border-radius: 6px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    /* Detail Modal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.55);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      z-index: 50;
+    }
+
+    .modal-backdrop.open { display: flex; }
+
+    .modal-card {
+      background: #fff;
+      border-radius: 12px;
+      max-width: 540px;
+      width: 100%;
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 16px;
+    }
+
+    .modal-photos {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      margin-bottom: 12px;
+    }
+
+    .modal-photos img {
+      height: 180px;
+      border-radius: 8px;
+      object-fit: cover;
+      flex-shrink: 0;
+    }
+
+    .spec-list {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      font-size: 14px;
+    }
+
+    .spec-list li { margin-bottom: 4px; }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="header-top">
+      <div class="brand">Nazra <span>Adama</span></div>
+      <button type="button" id="toggleFormBtn" class="btn-post-top">+ Post Ad</button>
+    </div>
+    <div class="search-wrap">
+      <input id="searchBox" class="search-input" type="search" placeholder="Search phones, auto parts, games, jobs in Adama..." />
+    </div>
+  </header>
+
+  <div id="categoryBar" class="cats-bar"></div>
+
+  <main class="container">
+    <!-- Post Form Panel -->
+    <section id="postPanel" class="panel">
+      <div class="panel-header">
+        <h2>Post a New Ad</h2>
+        <button type="button" id="hideFormBtn" class="btn btn-light">Hide Form</button>
+      </div>
+      <div class="muted">4 required fields to publish + up to 10 optional extra spaces.</div>
+
+      <form id="adForm">
+        <!-- 1. Title -->
+        <label for="fTitle">1. Title <span class="req">*</span></label>
+        <input id="fTitle" type="text" placeholder="e.g., Samsung Galaxy S21 Ultra" />
+
+        <!-- 2. Category -->
+        <label for="fCategory">2. Category <span class="req">*</span></label>
+        <select id="fCategory"></select>
+
+        <!-- 3. Price -->
+        <label for="fPrice">3. Price (ETB) <span class="req">*</span></label>
+        <input id="fPrice" type="number" min="1" placeholder="e.g., 26500" />
+
+        <!-- 4. Photos -->
+        <label for="fPhotos">4. Product Photos <span class="req">*</span></label>
+        <input id="fPhotos" type="file" accept="image/*" multiple />
+        <div class="muted" style="margin-top: 4px;">At least 1 photo required (up to 4 photos saved).</div>
+        <div id="fPreview" class="preview-row"></div>
+
+        <!-- Up to 10 optional extra spaces -->
+        <label>Optional Extra Spaces (Up to 10)</label>
+        <div id="fExtrasList"></div>
+        <button type="button" id="addExtraBtn" class="btn btn-light" style="margin-top: 8px;">
+          + Add Extra Space (<span id="extraNum">0</span>/10)
+        </button>
+
+        <!-- Customizable Payment / Bot Hook -->
+        <div class="pay-box">
+          <div id="payHeading" class="pay-title">Custom Payment &amp; Approval</div>
+          <div id="payDesc" class="muted">Configure your payment fee, instructions, or future Telegram bot code below.</div>
+          <label for="fCode" style="margin-top: 8px;">Approval / Promo / Bot Code (Optional)</label>
+          <input id="fCode" type="text" placeholder="Enter code (optional right now)" />
+        </div>
+
+        <div id="fError" class="error-text"></div>
+        <button type="submit" class="btn btn-submit">Publish to Nazra</button>
+      </form>
+    </section>
+
+    <!-- Listings Feed -->
+    <section>
+      <div class="section-meta">
+        <h2 id="feedTitle">Trending Ads in Adama</h2>
+        <span id="feedCount" class="muted">0 ads</span>
+      </div>
+      <div id="adsGrid" class="grid"></div>
+    </section>
+  </main>
+
+  <!-- Detail Modal -->
+  <div id="detailModal" class="modal-backdrop">
+    <div class="modal-card">
+      <div id="modalPhotos" class="modal-photos"></div>
+      <span id="modalCat" class="mini-cat"></span>
+      <h3 id="modalTitle" style="margin: 8px 0 4px;"></h3>
+      <div id="modalPrice" class="ad-price" style="font-size: 18px;"></div>
+      <div id="modalMeta" class="muted" style="margin-top: 4px;"></div>
+      <div id="modalCode" class="muted" style="margin-top: 4px;"></div>
+      <ul id="modalExtras" class="spec-list"></ul>
+      <div style="display: flex; gap: 8px; margin-top: 16px;">
+        <button type="button" id="deleteAdBtn" class="btn btn-danger">Delete Ad</button>
+        <button type="button" id="closeModalBtn" class="btn btn-light" style="margin-left: auto;">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // ==========================================
+    // CUSTOMIZE YOUR APP SETTINGS HERE EASILY
+    // ==========================================
+    const APP_CONFIG = {
+      storageKey: "nazra_jiji_style_v1",
+      maxPhotos: 4,
+      maxExtraSpaces: 10,
+      paymentHeading: "Custom Payment Setup (Editable)",
+      paymentDescription: "Customize your fee & flow here—Telegram bot link & one-time code check can be added when building the app.",
+      categories: [
+        "Electronics",
+        "Apparel",
+        "Auto Parts",
+        "Home Goods",
+        "Beauty",
+        "Jobs",
+        "Animals",
+        "Pool Games",
+        "PlayStation Games"
+      ]
+    };
+
+    const postPanel = document.getElementById("postPanel");
+    const toggleFormBtn = document.getElementById("toggleFormBtn");
+    const hideFormBtn = document.getElementById("hideFormBtn");
+    const categoryBar = document.getElementById("categoryBar");
+    const fCategory = document.getElementById("fCategory");
+    const searchBox = document.getElementById("searchBox");
+    const adForm = document.getElementById("adForm");
+    const fTitle = document.getElementById("fTitle");
+    const fPrice = document.getElementById("fPrice");
+    const fPhotos = document.getElementById("fPhotos");
+    const fPreview = document.getElementById("fPreview");
+    const fExtrasList = document.getElementById("fExtrasList");
+    const addExtraBtn = document.getElementById("addExtraBtn");
+    const extraNum = document.getElementById("extraNum");
+    const fCode = document.getElementById("fCode");
+    const fError = document.getElementById("fError");
+    const adsGrid = document.getElementById("adsGrid");
+    const feedTitle = document.getElementById("feedTitle");
+    const feedCount = document.getElementById("feedCount");
+
+    const detailModal = document.getElementById("detailModal");
+    const closeModalBtn = document.getElementById("closeModalBtn");
+    const deleteAdBtn = document.getElementById("deleteAdBtn");
+
+    document.getElementById("payHeading").textContent = APP_CONFIG.paymentHeading;
+    document.getElementById("payDesc").textContent = APP_CONFIG.paymentDescription;
+
+    let activeCategory = "All";
+    let searchQuery = "";
+    let draftPhotos = [];
+    let activeModalIndex = null;
+    let ads = loadStoredAds();
+
+    function loadStoredAds() {
+      try {
+        const raw = localStorage.getItem(APP_CONFIG.storageKey);
+        return raw ? JSON.parse(raw) : [];
+      } catch {
+        return [];
+      }
+    }
+
+    function persistAds() {
+      try {
+        localStorage.setItem(APP_CONFIG.storageKey, JSON.stringify(ads));
+      } catch {
+        fError.textContent = "Browser storage full—try fewer or smaller photos.";
+      }
+    }
+
+    function escapeHtml(value) {
+      return String(value)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    function buildCategories() {
+      const allCats = ["All", ...APP_CONFIG.categories];
+      categoryBar.innerHTML = "";
+      allCats.forEach((cat) => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "cat-pill" + (cat === activeCategory ? " active" : "");
+        btn.textContent = cat;
+        btn.addEventListener("click", () => {
+          activeCategory = cat;
+          buildCategories();
+          renderFeed();
+        });
+        categoryBar.appendChild(btn);
+      });
+
+      fCategory.innerHTML = `<option value="">Select a category</option>` +
+        APP_CONFIG.categories.map((c) => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`).join("");
+    }
+
+    function syncExtraCounter() {
+      const count = fExtrasList.querySelectorAll(".extra-row").length;
+      extraNum.textContent = count;
+      addExtraBtn.disabled = count >= APP_CONFIG.maxExtraSpaces;
+    }
+
+    addExtraBtn.addEventListener("click", () => {
+      const current = fExtrasList.querySelectorAll(".extra-row").length;
+      if (current >= APP_CONFIG.maxExtraSpaces) return;
+
+      const row = document.createElement("div");
+      row.className = "extra-row";
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "extra-input";
+      input.placeholder = `Extra detail #${current + 1} (optional)`;
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "btn btn-danger";
+      removeBtn.textContent = "✕";
+      removeBtn.addEventListener("click", () => {
+        row.remove();
+        syncExtraCounter();
+      });
+
+      row.appendChild(input);
+      row.appendChild(removeBtn);
+      fExtrasList.appendChild(row);
+      syncExtraCounter();
+    });
+
+    function readImage(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    fPhotos.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || []).slice(0, APP_CONFIG.maxPhotos);
+      draftPhotos = [];
+      fPreview.innerHTML = "";
+
+      for (const file of files) {
+        const src = await readImage(file);
+        draftPhotos.push(src);
+        const img = document.createElement("img");
+        img.src = src;
+        img.alt = "Photo preview";
+        fPreview.appendChild(img);
+      }
+    });
+
+    function openModal(index) {
+      const item = ads[index];
+      if (!item) return;
+      activeModalIndex = index;
+
+      document.getElementById("modalPhotos").innerHTML = item.photos
+        .map((src) => `<img src="${src}" alt="${escapeHtml(item.title)}" />`)
+        .join("");
+
+      document.getElementById("modalCat").textContent = item.category;
+      document.getElementById("modalTitle").textContent = item.title;
+      document.getElementById("modalPrice").textContent = `${Number(item.price).toLocaleString()} ETB`;
+      document.getElementById("modalMeta").textContent = `Adama • Posted ${item.date}`;
+      document.getElementById("modalCode").textContent = item.code ? `Code: ${item.code}` : "";
+
+      const extrasUl = document.getElementById("modalExtras");
+      extrasUl.innerHTML = item.extras.length
+        ? item.extras.map((ex) => `<li>${escapeHtml(ex)}</li>`).join("")
+        : `<li class="muted">No extra details added.</li>`;
+
+      detailModal.classList.add("open");
+    }
+
+    closeModalBtn.addEventListener("click", () => {
+      detailModal.classList.remove("open");
+      activeModalIndex = null;
+    });
+
+    detailModal.addEventListener("click", (e) => {
+      if (e.target === detailModal) {
+        detailModal.classList.remove("open");
+        activeModalIndex = null;
+      }
+    });
+
+    deleteAdBtn.addEventListener("click", () => {
+      if (activeModalIndex === null) return;
+      ads.splice(activeModalIndex, 1);
+      persistAds();
+      detailModal.classList.remove("open");
+      activeModalIndex = null;
+      renderFeed();
+    });
+
+    function renderFeed() {
+      const q = searchQuery.trim().toLowerCase();
+      const filteredWithIndex = ads
+        .map((ad, realIndex) => ({ ad, realIndex }))
+        .filter(({ ad }) => {
+          const matchesCat = activeCategory === "All" || ad.category === activeCategory;
+          const matchesSearch =
+            !q ||
+            ad.title.toLowerCase().includes(q) ||
+            ad.category.toLowerCase().includes(q) ||
+            ad.extras.some((ex) => ex.toLowerCase().includes(q));
+          return matchesCat && matchesSearch;
+        });
+
+      feedTitle.textContent = activeCategory === "All" ? "Ads in Adama" : `${activeCategory} in Adama`;
+      feedCount.textContent = `${filteredWithIndex.length} ${filteredWithIndex.length === 1 ? "ad" : "ads"}`;
+
+      if (filteredWithIndex.length === 0) {
+        adsGrid.innerHTML = `<div class="panel" style="grid-column: 1 / -1;"><div class="muted">No matching ads yet. Fill the 4 required fields above to publish one.</div></div>`;
+        return;
+      }
+
+      adsGrid.innerHTML = filteredWithIndex
+        .map(({ ad, realIndex }) => {
+          const cover = ad.photos[0] || "";
+          const badge = ad.photos.length > 1 ? `<span class="photo-badge">+${ad.photos.length - 1}</span>` : "";
+          return `
+            <article class="ad-tile" data-open="${realIndex}">
+              <div class="ad-thumb-wrap">
+                <img src="${cover}" alt="${escapeHtml(ad.title)}" />
+                ${badge}
+              </div>
+              <div class="ad-body">
+                <div class="ad-price">${Number(ad.price).toLocaleString()} ETB</div>
+                <div class="ad-name">${escapeHtml(ad.title)}</div>
+                <div class="ad-foot">
+                  <span class="mini-cat">${escapeHtml(ad.category)}</span>
+                  <span>Adama</span>
+                </div>
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+
+      adsGrid.querySelectorAll("[data-open]").forEach((tile) => {
+        tile.addEventListener("click", () => openModal(Number(tile.dataset.open)));
+      });
+    }
+
+    adForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      fError.textContent = "";
+
+      const title = fTitle.value.trim();
+      const category = fCategory.value.trim();
+      const price = fPrice.value.trim();
+      const code = fCode.value.trim();
+
+      // Enforce all 4 required fields
+      if (!title || !category || !price || Number(price) <= 0 || draftPhotos.length === 0) {
+        fError.textContent = "Please complete all 4 required items: Title, Category, Price (> 0), and at least 1 Photo.";
+        return;
+      }
+
+      // Collect up to 10 optional extra spaces
+      const extras = Array.from(document.querySelectorAll(".extra-input"))
+        .map((el) => el.value.trim())
+        .filter(Boolean)
+        .slice(0, APP_CONFIG.maxExtraSpaces);
+
+      ads.unshift({
+        title,
+        category,
+        price,
+        photos: [...draftPhotos],
+        extras,
+        code,
+        date: new Date().toLocaleDateString()
+      });
+
+      persistAds();
+      renderFeed();
+
+      adForm.reset();
+      draftPhotos = [];
+      fPreview.innerHTML = "";
+      fExtrasList.innerHTML = "";
+      fError.textContent = "";
+      syncExtraCounter();
+    });
+
+    searchBox.addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      renderFeed();
+    });
+
+    toggleFormBtn.addEventListener("click", () => {
+      postPanel.style.display = "block";
+      fTitle.focus();
+    });
+
+    hideFormBtn.addEventListener("click", () => {
+      postPanel.style.display = "none";
+    });
+
+    buildCategories();
+    syncExtraCounter();
+    renderFeed();
+  </script>
+</body>
+</html>
