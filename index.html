@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Nazra — Post Listing</title>
+  <style>
+    * { box-sizing: border-box; font-family: system-ui, -apple-system, sans-serif; }
+    body { margin: 0; padding: 16px; background: #f4f6f8; color: #111827; }
+    .container { max-width: 680px; margin: 0 auto; }
+    .card { background: #fff; border-radius: 12px; padding: 16px; margin-bottom: 16px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+    h1, h2, h3 { margin: 0 0 12px; }
+    label { display: block; font-weight: 600; margin: 12px 0 6px; font-size: 14px; }
+    .req { color: #dc2626; }
+    input, select, textarea {
+      width: 100%; padding: 10px 12px; border: 1px solid #d1d5db;
+      border-radius: 8px; font-size: 15px; background: #fff;
+    }
+    .hint { font-size: 12px; color: #6b7280; margin-top: 4px; }
+    .extra-row { display: flex; gap: 8px; margin-top: 8px; align-items: center; }
+    .extra-row input { flex: 1; }
+    .btn {
+      border: none; border-radius: 8px; padding: 11px 16px;
+      font-weight: 600; cursor: pointer; font-size: 14px;
+    }
+    .btn-primary { background: #16a34a; color: #fff; width: 100%; padding: 13px; font-size: 16px; margin-top: 16px; }
+    .btn-secondary { background: #e5e7eb; color: #111827; }
+    .btn-remove { background: #fee2e2; color: #b91c1c; padding: 10px 12px; }
+    .previews { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .previews img { width: 84px; height: 84px; object-fit: cover; border-radius: 8px; border: 1px solid #e5e7eb; }
+    .error { color: #dc2626; font-weight: 600; margin-top: 10px; font-size: 14px; }
+    .listing { border-top: 1px solid #e5e7eb; padding-top: 14px; margin-top: 14px; }
+    .listing-photos { display: flex; gap: 8px; flex-wrap: wrap; margin: 8px 0; }
+    .listing-photos img { width: 110px; height: 110px; object-fit: cover; border-radius: 8px; }
+    .badge { display: inline-block; background: #dcfce7; color: #166534; padding: 3px 8px; border-radius: 999px; font-size: 12px; font-weight: 600; }
+    .extras-list { margin: 8px 0 0; padding-left: 18px; font-size: 14px; color: #374151; }
+    .bot-note { background: #eff6ff; border: 1px solid #bfdbfe; padding: 10px 12px; border-radius: 8px; font-size: 13px; margin-top: 12px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="card">
+      <h1>Post an Ad</h1>
+      <p class="hint">Complete all <strong>4 required</strong> items below. You can also add up to <strong>10 optional</strong> extra details.</p>
+
+      <form id="adForm">
+        <!-- 1. REQUIRED: Title -->
+        <label for="title">1. Product Title <span class="req">*</span></label>
+        <input id="title" type="text" placeholder="e.g., Galaxy S21 Ultra 256GB" required />
+
+        <!-- 2. REQUIRED: Category -->
+        <label for="category">2. Category <span class="req">*</span></label>
+        <select id="category" required>
+          <option value="">-- Select Category --</option>
+          <option value="Electronics">Electronics</option>
+          <option value="Apparel">Apparel</option>
+          <option value="Auto Parts">Auto Parts</option>
+          <option value="Home Goods">Home Goods</option>
+          <option value="Beauty">Beauty</option>
+          <option value="Jobs">Jobs</option>
+          <option value="Animals">Animals</option>
+          <option value="Games & Consoles">Games & Consoles</option>
+        </select>
+
+        <!-- 3. REQUIRED: Price -->
+        <label for="price">3. Price (ETB) <span class="req">*</span></label>
+        <input id="price" type="number" min="1" placeholder="e.g., 28000" required />
+
+        <!-- 4. REQUIRED: Product Photos -->
+        <label for="photos">4. Product Photos <span class="req">*</span></label>
+        <input id="photos" type="file" accept="image/*" multiple />
+        <div class="hint">Select at least 1 photo (up to 4 recommended for smooth phone loading).</div>
+        <div id="photoPreview" class="previews"></div>
+
+        <!-- OPTIONAL: Up to 10 extra spaces -->
+        <label>Optional Extra Details (Up to 10)</label>
+        <div id="extraFields"></div>
+        <button type="button" id="addExtraBtn" class="btn btn-secondary" style="margin-top:8px;">
+          + Add Extra Detail (<span id="extraCount">0</span>/10)
+        </button>
+
+        <!-- PLACEHOLDER FOR LATER BOT / ONE-TIME CODE -->
+        <div class="bot-note">
+          <strong>Telegram Bot &amp; One-Time Code (Later Setup):</strong>
+          <div class="hint" style="margin-top:4px;">
+            Bot link will be connected when you build/launch the app.
+          </div>
+          <label for="oneTimeCode" style="margin-top:8px;">One-Time Approval Code (Optional while testing)</label>
+          <input id="oneTimeCode" type="text" placeholder="Enter code from bot (when enabled)" />
+        </div>
+
+        <div id="errorMsg" class="error"></div>
+        <button type="submit" class="btn btn-primary">Publish Ad</button>
+      </form>
+    </div>
+
+    <div class="card">
+      <h2>Posted Listings (<span id="listingCount">0</span>)</h2>
+      <div id="listings"></div>
+    </div>
+  </div>
+
+  <script>
+    const MAX_EXTRAS = 10;
+    let photoDataUrls = [];
+    let listings = [];
+
+    const adForm = document.getElementById("adForm");
+    const photosInput = document.getElementById("photos");
+    const photoPreview = document.getElementById("photoPreview");
+    const extraFields = document.getElementById("extraFields");
+    const addExtraBtn = document.getElementById("addExtraBtn");
+    const extraCount = document.getElementById("extraCount");
+    const errorMsg = document.getElementById("errorMsg");
+    const listingsEl = document.getElementById("listings");
+    const listingCount = document.getElementById("listingCount");
+
+    function updateExtraUI() {
+      const count = extraFields.querySelectorAll(".extra-row").length;
+      extraCount.textContent = count;
+      addExtraBtn.disabled = count >= MAX_EXTRAS;
+      addExtraBtn.style.opacity = count >= MAX_EXTRAS ? "0.5" : "1";
+    }
+
+    addExtraBtn.addEventListener("click", () => {
+      const currentCount = extraFields.querySelectorAll(".extra-row").length;
+      if (currentCount >= MAX_EXTRAS) return;
+
+      const row = document.createElement("div");
+      row.className = "extra-row";
+
+      const input = document.createElement("input");
+      input.type = "text";
+      input.className = "extra-input";
+      input.placeholder = `Extra detail #${currentCount + 1} (e.g., Condition, Storage, Negotiable)`;
+
+      const removeBtn = document.createElement("button");
+      removeBtn.type = "button";
+      removeBtn.className = "btn btn-remove";
+      removeBtn.textContent = "✕";
+      removeBtn.addEventListener("click", () => {
+        row.remove();
+        updateExtraUI();
+      });
+
+      row.appendChild(input);
+      row.appendChild(removeBtn);
+      extraFields.appendChild(row);
+      updateExtraUI();
+    });
+
+    photosInput.addEventListener("change", async (e) => {
+      const files = Array.from(e.target.files || []).slice(0, 4);
+      photoDataUrls = [];
+      photoPreview.innerHTML = "";
+
+      for (const file of files) {
+        const dataUrl = await readFileAsDataUrl(file);
+        photoDataUrls.push(dataUrl);
+
+        const img = document.createElement("img");
+        img.src = dataUrl;
+        img.alt = file.name;
+        photoPreview.appendChild(img);
+      }
+    });
+
+    function readFileAsDataUrl(file) {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+    }
+
+    function renderListings() {
+      listingCount.textContent = listings.length;
+      listingsEl.innerHTML = "";
+
+      listings.forEach((item) => {
+        const div = document.createElement("div");
+        div.className = "listing";
+
+        const extrasHtml = item.extras.length
+          ? `<ul class="extras-list">${item.extras.map((ex) => `<li>${escapeHtml(ex)}</li>`).join("")}</ul>`
+          : "";
+
+        const photosHtml = item.photos.length
+          ? `<div class="listing-photos">${item.photos.map((src) => `<img src="${src}" alt="Product photo" />`).join("")}</div>`
+          : "";
+
+        const codeHtml = item.code
+          ? `<div class="hint">Code: <strong>${escapeHtml(item.code)}</strong></div>`
+          : "";
+
+        div.innerHTML = `
+          <span class="badge">${escapeHtml(item.category)}</span>
+          <h3 style="margin-top:6px;">${escapeHtml(item.title)}</h3>
+          <div><strong>${Number(item.price).toLocaleString()} ETB</strong></div>
+          ${photosHtml}
+          ${extrasHtml}
+          ${codeHtml}
+        `;
+        listingsEl.appendChild(div);
+      });
+    }
+
+    function escapeHtml(str) {
+      return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+
+    adForm.addEventListener("submit", (e) => {
+      e.preventDefault();
+      errorMsg.textContent = "";
+
+      const title = document.getElementById("title").value.trim();
+      const category = document.getElementById("category").value.trim();
+      const price = document.getElementById("price").value.trim();
+      const code = document.getElementById("oneTimeCode").value.trim();
+
+      // Enforce all 4 required things
+      if (!title || !category || !price || Number(price) <= 0 || photoDataUrls.length === 0) {
+        errorMsg.textContent = "Please complete all 4 required items: Title, Category, Price, and at least 1 Photo.";
+        return;
+      }
+
+      // Collect up to 10 optional extra values (only non-empty ones)
+      const extras = Array.from(document.querySelectorAll(".extra-input"))
+        .map((el) => el.value.trim())
+        .filter(Boolean)
+        .slice(0, MAX_EXTRAS);
+
+      listings.unshift({
+        title,
+        category,
+        price,
+        photos: [...photoDataUrls],
+        extras,
+        code
+      });
+
+      renderListings();
+
+      // Reset form
+      adForm.reset();
+      photoDataUrls = [];
+      photoPreview.innerHTML = "";
+      extraFields.innerHTML = "";
+      updateExtraUI();
+    });
+
+    updateExtraUI();
+  </script>
+</body>
+</html>
