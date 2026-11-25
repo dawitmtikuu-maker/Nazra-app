@@ -1,0 +1,2225 @@
+```html
+<!DOCTYPE html>
+<html lang="am" class="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>ናዝራ (Nazra) — የአዳማ የገበያ ማዕከል</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Noto+Sans+Ethiopic:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg-base: #111317;
+      --bg-surface: #1b1e24;
+      --bg-elevated: #242830;
+      --border-subtle: #2d323c;
+      --brand-green: #22c55e;
+      --brand-green-deep: #14532d;
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      margin: 0;
+      background-color: var(--bg-base);
+      color: #f3f4f6;
+      font-family: 'Noto Sans Ethiopic', 'Inter', system-ui, -apple-system, sans-serif;
+      overflow-x: hidden;
+    }
+
+    /* Hide scrollbars cleanly for horizontal chips & swipeable galleries */
+    .no-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .no-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+
+    /* Native mobile-trusted offscreen file input (never display:none or transparent overlay) */
+    .native-gallery-input {
+      position: fixed;
+      left: -9999px;
+      top: 0;
+      width: 1px;
+      height: 1px;
+    }
+
+    /* 2-line text clamping for uniform 2-column cards */
+    .clamp-2 {
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#111317] text-gray-100">
+
+  <!-- Real off-screen native file input bound directly via <label for="nazraGalleryInput"> -->
+  <input
+    type="file"
+    id="nazraGalleryInput"
+    accept="image/*"
+    multiple
+    class="native-gallery-input"
+  />
+
+  <!-- Top Header & Search Bar -->
+  <header class="sticky top-0 z-30 bg-[#14532d] border-b border-emerald-900/70 shadow-md">
+    <div class="max-w-lg mx-auto px-3 pt-2.5 pb-2.5 space-y-2">
+      <!-- Brand Row -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <div class="w-8 h-8 rounded-xl bg-emerald-500 text-gray-950 font-bold flex items-center justify-center text-base shadow">
+            ና
+          </div>
+          <div>
+            <h1 class="text-base font-bold leading-tight text-white tracking-tight">ናዝራ · Nazra</h1>
+            <p class="text-[11px] text-emerald-200 leading-none">አዳማ (ናዝሬት) የገበያ ማዕከል</p>
+          </div>
+        </div>
+        <button
+          type="button"
+          id="openPrivacyHeaderBtn"
+          class="text-[11px] font-medium px-2.5 py-1.5 rounded-lg bg-emerald-950/60 text-emerald-100 border border-emerald-700/50 active:scale-95 transition"
+        >
+          ግላዊነት
+        </button>
+      </div>
+
+      <!-- Adama Location Badge + Search Input Row -->
+      <div class="flex items-center gap-2">
+        <div class="shrink-0 flex items-center gap-1.5 bg-[#17211b] border border-emerald-800/60 text-gray-100 text-xs font-medium px-3 py-2.5 rounded-xl">
+          <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+          <span>አዳማ</span>
+        </div>
+
+        <div class="relative flex-1">
+          <input
+            type="search"
+            id="searchInput"
+            placeholder="እኔ እፈልጋለሁ..."
+            class="w-full bg-[#17211b] border border-emerald-800/60 text-gray-100 placeholder-gray-400 text-xs rounded-xl pl-3.5 pr-9 py-2.5 focus:outline-none focus:border-emerald-400"
+          />
+          <svg
+            class="w-4 h-4 text-gray-300 absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+          >
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35m1.85-5.15a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="flex-1 w-full max-w-lg mx-auto pb-24">
+
+    <!-- ==================== TAB 1: HOME (መነሻ) ==================== -->
+    <section id="view-home" class="block">
+      <!-- Main Category Chips & Subcategory Chips -->
+      <div class="bg-[#171a20] border-b border-[#262a33] px-3 py-2.5 space-y-2">
+        <div id="mainCategoryChips" class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+          <!-- Main categories injected by JS -->
+        </div>
+        <div id="subCategoryChips" class="hidden items-center gap-1.5 overflow-x-auto no-scrollbar pt-0.5">
+          <!-- Subcategories injected when a main category is selected -->
+        </div>
+      </div>
+
+      <!-- Feed Header & Auto-Expiry Note -->
+      <div class="px-3 pt-3 pb-2 flex items-center justify-between gap-2">
+        <div class="min-w-0">
+          <h2 id="feedHeading" class="text-sm font-bold text-white truncate">የቅርብ ጊዜ ልጥፎች</h2>
+          <p class="text-[11px] text-gray-400">እያንዳንዱ ልጥፍ ከ1 ወር (30 ቀን) በኋላ በራስ-ሰር ይጠፋል</p>
+        </div>
+        <span id="feedCountBadge" class="shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-[#1b1e24] text-emerald-400 border border-[#2d323c]">
+          0 ልጥፎች
+        </span>
+      </div>
+
+      <!-- 2-Column Side-by-Side Listing Grid -->
+      <div id="listingsGrid" class="px-2.5 grid grid-cols-2 gap-2.5">
+        <!-- 2-column side-by-side cards rendered here -->
+      </div>
+
+      <!-- Empty Filter State -->
+      <div id="emptyFeedState" class="hidden px-4 py-14 text-center">
+        <div class="w-12 h-12 rounded-2xl bg-[#1b1e24] border border-[#2d323c] mx-auto flex items-center justify-center text-gray-400 mb-3">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-4.35-4.35M10.5 18a7.5 7.5 0 100-15 7.5 7.5 0 000 15z" />
+          </svg>
+        </div>
+        <p class="text-sm font-semibold text-gray-200">ምንም ልጥፍ አልተገኘም</p>
+        <p class="text-xs text-gray-400 mt-1">ሌላ ምድብ ይምረጡ ወይም አዲስ ማስታወቂያ ይለጥፉ።</p>
+        <button
+          type="button"
+          id="resetFiltersBtn"
+          class="mt-4 px-4 py-2 rounded-xl bg-emerald-600 text-white text-xs font-semibold active:scale-95 transition"
+        >
+          ሁሉንም ልጥፎች አሳይ
+        </button>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 2: SELL (ሽጡ) ==================== -->
+    <section id="view-sell" class="hidden px-3.5 pt-4 space-y-4">
+      <div class="bg-[#1b1e24] border border-[#2d323c] rounded-2xl p-4 space-y-4">
+        <div class="flex items-center justify-between border-b border-[#2d323c] pb-3">
+          <div>
+            <h2 class="text-base font-bold text-white">አዲስ ማስታወቂያ ይለጥፉ</h2>
+            <p class="text-[11px] text-gray-400 mt-0.5">ከ1–5 ፎቶዎች፣ ስም እና ስልክ ቁጥር ያስገቡ (ለ30 ቀን ይቆያል)</p>
+          </div>
+          <span class="text-[11px] font-semibold px-2.5 py-1 rounded-lg bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+            ነፃ ልጥፍ
+          </span>
+        </div>
+
+        <!-- Community & Safety Guidelines Notice -->
+        <div class="bg-[#111317] border border-[#2d323c] rounded-xl p-2.5 text-[11px] text-gray-400 leading-relaxed">
+          <strong class="text-gray-200">የማህበረሰብ ደህንነት መመሪያ፦</strong> ህገ-ወጥ፣ አጭበርባሪ፣ ወይም አጸያፊ ማስታወቂያዎች በናዝራ አይፈቀዱም። ገዢዎች በቀጥታ የሻጭን ስምና ስልክ ያያሉ።
+        </div>
+
+        <!-- Gallery Photo Uploader (1–5 Photos via direct <label for="nazraGalleryInput">) -->
+        <div class="space-y-2">
+          <div class="flex items-center justify-between">
+            <span class="text-xs font-semibold text-gray-200">
+              ፎቶዎች ይምረጡ <span class="text-rose-400">*</span>
+              <span class="text-[11px] font-normal text-gray-400">(1–5 ፎቶዎች፣ ቢያንስ 1 ግዴታ)</span>
+            </span>
+            <span id="photoCounterText" class="text-[11px] font-semibold text-emerald-400">0 / 5</span>
+          </div>
+
+          <!-- Compression Progress Bar -->
+          <div id="photoProcessingBar" class="hidden items-center gap-2 text-xs text-emerald-300 bg-emerald-950/50 border border-emerald-700/50 rounded-xl px-3 py-2">
+            <svg class="w-4 h-4 animate-spin text-emerald-400 shrink-0" fill="none" viewBox="0 0 24 24">
+              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+            </svg>
+            <span>ፎቶዎች በመዘጋጀት ላይ ናቸው...</span>
+          </div>
+
+          <!-- 5 Thumbnail / Direct-Label Slots -->
+          <div id="photoSlotsGrid" class="grid grid-cols-5 gap-2">
+            <!-- Rendered dynamically -->
+          </div>
+
+          <!-- Primary Direct Gallery Trigger Button -->
+          <div class="flex items-center justify-between pt-1">
+            <label
+              for="nazraGalleryInput"
+              class="inline-flex items-center gap-1.5 text-xs font-semibold text-emerald-400 bg-emerald-500/10 border border-emerald-500/30 px-3.5 py-2 rounded-xl cursor-pointer active:scale-95 transition"
+            >
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+              </svg>
+              <span>ከጋለሪ ፎቶ ምረጥ</span>
+            </label>
+            <span class="text-[11px] text-gray-400">የመጀመሪያው ዋና ፎቶ ነው</span>
+          </div>
+        </div>
+
+        <form id="sellForm" class="space-y-3.5" novalidate>
+          <!-- Seller Name & Phone Right at the Top of the Posting Form -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 bg-[#111317] border border-emerald-500/30 rounded-2xl p-3">
+            <div>
+              <label for="sellerName" class="block text-xs font-semibold text-gray-200 mb-1">
+                የሻጭ ስም <span class="text-rose-400">*</span>
+              </label>
+              <input
+                type="text"
+                id="sellerName"
+                placeholder="ስምዎን ያስገቡ"
+                class="w-full bg-[#1b1e24] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <div>
+              <label for="sellerPhone" class="block text-xs font-semibold text-gray-200 mb-1">
+                ስልክ ቁጥር <span class="text-rose-400">*</span>
+              </label>
+              <input
+                type="tel"
+                id="sellerPhone"
+                placeholder="09... / 07..."
+                class="w-full bg-[#1b1e24] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+          </div>
+
+          <!-- Title -->
+          <div>
+            <label for="itemTitle" class="block text-xs font-semibold text-gray-200 mb-1">
+              የማስታወቂያ ርዕስ <span class="text-rose-400">*</span>
+            </label>
+            <input
+              type="text"
+              id="itemTitle"
+              placeholder="ምሳሌ፦ ባለ 2 መኝታ አፓርታማ ለኪራይ፣ Samsung A54..."
+              class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+            />
+          </div>
+
+          <!-- Category & Subcategory with AI Detection + Manual Override -->
+          <div class="bg-[#111317] border border-[#2d323c] rounded-2xl p-3 space-y-2.5">
+            <div class="flex items-center justify-between gap-2">
+              <span class="text-xs font-semibold text-gray-200">ምድብ እና ንዑስ ምድብ</span>
+              <span id="aiCategoryBadge" class="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
+                AI ምደባ ዝግጁ
+              </span>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              <div>
+                <label for="sellMainCategory" class="block text-[11px] text-gray-400 mb-1">ዋና ምድብ</label>
+                <select
+                  id="sellMainCategory"
+                  class="w-full bg-[#1b1e24] border border-[#2d323c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                ></select>
+              </div>
+              <div>
+                <label for="sellSubCategory" class="block text-[11px] text-gray-400 mb-1">ንዑስ ምድብ</label>
+                <select
+                  id="sellSubCategory"
+                  class="w-full bg-[#1b1e24] border border-[#2d323c] rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-emerald-400"
+                ></select>
+              </div>
+            </div>
+          </div>
+
+          <!-- Optional Section: የሚፈልጉትን መረጃ ይሙሉ (7 Boxes including ዝርዝር መረጃ) -->
+          <div class="pt-2 border-t border-[#2d323c] space-y-3">
+            <div>
+              <p class="text-xs font-semibold text-gray-200">
+                የሚፈልጉትን መረጃ ይሙሉ <span class="text-gray-400 font-normal">(አማራጭ — 7 ሳጥኖች)</span>
+              </p>
+              <p class="text-[11px] text-gray-400 mt-0.5">
+                ዝርዝር መረጃን ጨምሮ የሚፈልጉትን ሳጥኖች ብቻ ይሙሉ (ባዶ የተተዉትን ይዝላል)
+              </p>
+            </div>
+
+            <!-- Box 1: ዋጋ (ETB) -->
+            <div>
+              <label for="itemPrice" class="block text-xs font-medium text-gray-300 mb-1">
+                1. ዋጋ (ETB) — <span class="text-gray-400">ባዶ ከተተወ «በስምምነት» ይላል</span>
+              </label>
+              <input
+                type="text"
+                id="itemPrice"
+                placeholder="ምሳሌ፦ 25,000 ወይም 15,000 / ወር"
+                class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <!-- Box 2: ቦታ / ሰፈር በአዳማ -->
+            <div>
+              <label for="itemNeighborhood" class="block text-xs font-medium text-gray-300 mb-1">
+                2. ቦታ / ሰፈር በአዳማ
+              </label>
+              <input
+                type="text"
+                id="itemNeighborhood"
+                placeholder="ምሳሌ፦ ፖስታ ቤት፣ ቀበሌ 04፣ ፍራንኮ፣ አስቱ..."
+                class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <!-- Box 3: ሁኔታ / ደረጃ -->
+            <div>
+              <label for="itemCondition" class="block text-xs font-medium text-gray-300 mb-1">
+                3. ሁኔታ / ደረጃ
+              </label>
+              <input
+                type="text"
+                id="itemCondition"
+                placeholder="ምሳሌ፦ አዲስ፣ ጥሩ ሁኔታ ላይ ያለ፣ የታደሰ..."
+                class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <!-- Box 4: መጠን / ሞዴል / አቅም -->
+            <div>
+              <label for="itemSpec" class="block text-xs font-medium text-gray-300 mb-1">
+                4. መጠን / ሞዴል / አቅም
+              </label>
+              <input
+                type="text"
+                id="itemSpec"
+                placeholder="ምሳሌ፦ 2 መኝታ፣ 8GB/128GB፣ 2022፣ 45 sqm..."
+                class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <!-- Box 5: የክፍያ / ኪራይ ሁኔታ -->
+            <div>
+              <label for="itemPaymentTerm" class="block text-xs font-medium text-gray-300 mb-1">
+                5. የክፍያ / ኪራይ ሁኔታ
+              </label>
+              <input
+                type="text"
+                id="itemPaymentTerm"
+                placeholder="ምሳሌ፦ ወርሃዊ፣ በጥሬ ገንዘብ፣ ቅድሚያ 3 ወር..."
+                class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <!-- Box 6: ዝርዝር መረጃ (Inside የሚፈልጉትን መረጃ ይሙሉ) -->
+            <div>
+              <label for="itemDetails" class="block text-xs font-medium text-gray-300 mb-1">
+                6. ዝርዝር መረጃ
+              </label>
+              <textarea
+                id="itemDetails"
+                rows="3"
+                placeholder="ስለ እቃው፣ ቤቱ፣ መኪናው፣ ጌም ዞኑ፣ ስራው ወይም ንግዱ ተጨማሪ ዝርዝር መረጃ..."
+                class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+              ></textarea>
+            </div>
+
+            <!-- Box 7: ተጨማሪ ማስታወሻ -->
+            <div>
+              <label for="itemExtraNote" class="block text-xs font-medium text-gray-300 mb-1">
+                7. ተጨማሪ ማስታወሻ
+              </label>
+              <input
+                type="text"
+                id="itemExtraNote"
+                placeholder="ምሳሌ፦ የመደወያ ሰዓት ከጠዋቱ 2 እስከ ምሽቱ 2..."
+                class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+              />
+            </div>
+
+            <!-- Optional Telegram Bot Link & Optional Verification Code (2 Boxes) -->
+            <div class="bg-[#111317] border border-[#2d323c] rounded-2xl p-3 space-y-2.5">
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs font-medium text-gray-300">የ Telegram Bot ማረጋገጫ <span class="text-gray-500">(አማራጭ)</span></span>
+                <div class="flex items-center gap-2">
+                  <span id="telegramBotSlot" class="text-[11px] text-emerald-400"></span>
+                  <a
+                    id="openEnteredTgBotBtn"
+                    href="#"
+                    target="_blank"
+                    rel="noopener"
+                    class="hidden text-[11px] font-semibold px-2 py-0.5 rounded-lg bg-emerald-500/15 text-emerald-300 border border-emerald-500/30"
+                  >
+                    Bot ክፈት
+                  </a>
+                </div>
+              </div>
+
+              <!-- Box 1: Telegram Bot Link / Setup Link -->
+              <div>
+                <label for="telegramBotLinkInput" class="block text-[11px] font-medium text-gray-400 mb-1">
+                  1. የ Telegram Bot ሊንክ / ማስፈጠሪያ ሊንክ <span class="text-gray-500">(አማራጭ)</span>
+                </label>
+                <input
+                  type="url"
+                  id="telegramBotLinkInput"
+                  placeholder="ምሳሌ፦ https://t.me/YourNazraBot"
+                  class="w-full bg-[#1b1e24] border border-[#2d323c] rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+
+              <!-- Box 2: Code brought from Telegram -->
+              <div>
+                <label id="botVerificationCodeLabel" for="botVerificationCode" class="block text-[11px] font-medium text-gray-400 mb-1">
+                  2. ከ Telegram ያመጡትን Code ያስገቡ <span id="botCodeOptionalHint" class="text-gray-500">(አማራጭ)</span>
+                </label>
+                <input
+                  type="text"
+                  id="botVerificationCode"
+                  placeholder="ከ Telegram Bot ያገኙትን Code እዚህ ይለጥፉ (ባይኖርም «ለጥፍ» ይሰራል)"
+                  class="w-full bg-[#1b1e24] border border-[#2d323c] rounded-xl px-3 py-2 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+                />
+              </div>
+            </div>
+          </div>
+
+          <!-- Always-Active Publish Button -->
+          <button
+            type="submit"
+            id="publishAdBtn"
+            class="w-full py-3.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 active:scale-[0.99] text-white font-bold text-sm shadow-lg shadow-emerald-950/50 transition"
+          >
+            ለጥፍ
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ==================== TAB 3: PROFILE (መገለጫ) ==================== -->
+    <section id="view-profile" class="hidden px-3.5 pt-4 space-y-4">
+      <!-- Seller Profile Card (Name & Phone Only) -->
+      <div class="bg-[#1b1e24] border border-[#2d323c] rounded-2xl p-4 space-y-3.5">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center gap-3">
+            <div class="w-11 h-11 rounded-2xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 font-bold text-lg flex items-center justify-center">
+              ሻ
+            </div>
+            <div>
+              <h2 class="text-sm font-bold text-white">የሻጭ መገለጫ</h2>
+              <p class="text-[11px] text-gray-400">ስም እና ስልክ ቁጥር ብቻ በማስገባት ይሽጡ</p>
+            </div>
+          </div>
+          <button
+            type="button"
+            id="openPrivacyProfileBtn"
+            class="text-[11px] font-medium text-emerald-400 underline"
+          >
+            የግላዊነት ፖሊሲ
+          </button>
+        </div>
+
+        <form id="profileForm" class="space-y-3">
+          <div>
+            <label for="profileNameInput" class="block text-xs font-semibold text-gray-300 mb-1">ስም</label>
+            <input
+              type="text"
+              id="profileNameInput"
+              placeholder="ስምዎን ያስገቡ"
+              class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+            />
+          </div>
+          <div>
+            <label for="profilePhoneInput" class="block text-xs font-semibold text-gray-300 mb-1">ስልክ ቁጥር</label>
+            <input
+              type="tel"
+              id="profilePhoneInput"
+              placeholder="09... / 07..."
+              class="w-full bg-[#111317] border border-[#2d323c] rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-gray-500 focus:outline-none focus:border-emerald-400"
+            />
+          </div>
+
+          <p class="text-[11px] text-gray-400 bg-[#111317] border border-[#2d323c] rounded-xl p-2.5 leading-relaxed">
+            ማሳሰቢያ፦ የሚያስገቡት ስም እና ስልክ ቁጥር ገዢዎች በቀጥታ እንዲደውሉልዎ በማስታወቂያዎ ላይ ይታያል።
+          </p>
+
+          <button
+            type="submit"
+            class="w-full py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold text-xs active:scale-[0.99] transition"
+          >
+            መገለጫ አስቀምጥ
+          </button>
+        </form>
+
+        <!-- Owner Control: Mandatory Telegram Code Toggle Button -->
+        <div class="pt-3 border-t border-[#2d323c] flex items-center justify-between gap-3">
+          <div class="min-w-0">
+            <p class="text-xs font-semibold text-gray-200">የ Telegram Code ግዴታ</p>
+            <p id="tgCodeRequirementStatusText" class="text-[11px] text-gray-400">አሁን፦ አማራጭ (በነፃ መለጠፍ ይቻላል)</p>
+          </div>
+          <button
+            type="button"
+            id="ownerTgCodeToggleBtn"
+            aria-pressed="false"
+            class="shrink-0 px-3 py-2 rounded-xl text-xs font-bold border transition active:scale-95 bg-[#111317] text-gray-300 border-[#2d323c]"
+          >
+            ግዴታ፡ አይደለም
+          </button>
+        </div>
+      </div>
+
+      <!-- Seller's Active Listings -->
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-sm font-bold text-white">የእኔ ልጥፎች</h3>
+          <span id="myListingsCount" class="text-[11px] text-gray-400">0 ልጥፎች</span>
+        </div>
+
+        <div id="myListingsContainer" class="space-y-2.5">
+          <!-- Seller's active ads rendered here -->
+        </div>
+      </div>
+
+      <!-- Blocked Sellers / Listings Section with Unblock Control -->
+      <div class="space-y-2.5">
+        <div class="flex items-center justify-between px-1">
+          <h3 class="text-sm font-bold text-white">የታገዱ ልጥፎች / ሻጮች</h3>
+          <span id="blockedCountBadge" class="text-[11px] text-gray-400">0 የታገዱ</span>
+        </div>
+
+        <div id="blockedItemsContainer" class="space-y-2">
+          <!-- Blocked items & Unblock buttons rendered here -->
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Bottom Navigation Bar -->
+  <nav class="fixed bottom-0 inset-x-0 z-30 bg-[#171a20]/95 backdrop-blur border-t border-[#2d323c]">
+    <div class="max-w-lg mx-auto grid grid-cols-3 py-1.5">
+      <button
+        type="button"
+        data-tab="home"
+        class="nav-btn flex flex-col items-center justify-center py-1.5 text-emerald-400 font-semibold transition"
+      >
+        <svg class="w-5 h-5 mb-0.5" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M12 3l9 7.5V21a1 1 0 01-1 1h-5v-6H9v6H4a1 1 0 01-1-1V10.5L12 3z" />
+        </svg>
+        <span class="text-[11px]">መነሻ</span>
+      </button>
+
+      <button
+        type="button"
+        data-tab="sell"
+        class="nav-btn flex flex-col items-center justify-center py-1.5 text-gray-400 hover:text-gray-200 font-medium transition"
+      >
+        <div class="w-6 h-6 mb-0.5 rounded-lg border-2 border-current flex items-center justify-center">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 5v14m-7-7h14" />
+          </svg>
+        </div>
+        <span class="text-[11px]">ሽጡ</span>
+      </button>
+
+      <button
+        type="button"
+        data-tab="profile"
+        class="nav-btn flex flex-col items-center justify-center py-1.5 text-gray-400 hover:text-gray-200 font-medium transition"
+      >
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+        </svg>
+        <span class="text-[11px]">መገለጫ</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ==================== LISTING DETAIL MODAL (Swipeable Multi-Photo Gallery) ==================== -->
+  <div id="detailModal" class="fixed inset-0 z-50 hidden bg-black/80 backdrop-blur-xs flex items-end sm:items-center justify-center">
+    <div class="w-full max-w-lg bg-[#1b1e24] border-t sm:border border-[#2d323c] rounded-t-3xl sm:rounded-3xl max-h-[92vh] flex flex-col overflow-hidden shadow-2xl">
+      <!-- Modal Header -->
+      <div class="flex items-center justify-between px-4 py-3 border-b border-[#2d323c] gap-2">
+        <div class="flex items-center gap-1.5 min-w-0 overflow-hidden">
+          <span id="modalMainCatTag" class="shrink-0 text-[11px] font-semibold px-2.5 py-1 rounded-full bg-emerald-500/15 text-emerald-400">
+            ምድብ
+          </span>
+          <span id="modalSubCatTag" class="truncate text-[11px] font-medium px-2.5 py-1 rounded-full bg-[#242830] text-gray-300">
+            ንዑስ ምድብ
+          </span>
+        </div>
+        <button
+          type="button"
+          id="closeDetailModalBtn"
+          class="shrink-0 w-8 h-8 rounded-full bg-[#242830] text-gray-300 flex items-center justify-center active:scale-95"
+          aria-label="ዝጋ"
+        >
+          ✕
+        </button>
+      </div>
+
+      <!-- Modal Scrollable Body -->
+      <div class="overflow-y-auto p-4 space-y-4">
+        <!-- Swipeable Multi-Photo Gallery with Prev/Next & Dot Indicators -->
+        <div class="relative">
+          <div id="modalPhotoCarousel" class="flex gap-2 overflow-x-auto snap-x snap-mandatory no-scrollbar rounded-2xl">
+            <!-- Slides injected by JS -->
+          </div>
+          <button
+            type="button"
+            id="modalPrevPhotoBtn"
+            class="hidden absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/65 text-white flex items-center justify-center text-sm font-bold"
+            aria-label="ቀዳሚ ፎቶ"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            id="modalNextPhotoBtn"
+            class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-black/65 text-white flex items-center justify-center text-sm font-bold"
+            aria-label="ቀጣይ ፎቶ"
+          >
+            ›
+          </button>
+          <div id="modalPhotoDots" class="flex items-center justify-center gap-1.5 mt-2">
+            <!-- Dot indicators -->
+          </div>
+        </div>
+
+        <!-- Price, Title & Meta -->
+        <div class="space-y-1">
+          <div id="modalPrice" class="text-lg font-bold text-emerald-400">ETB 0</div>
+          <h3 id="modalTitle" class="text-base font-bold text-white leading-snug">ርዕስ</h3>
+          <p id="modalMeta" class="text-xs text-gray-400">አዳማ • ዛሬ</p>
+        </div>
+
+        <!-- Full Description -->
+        <div class="bg-[#111317] border border-[#2d323c] rounded-2xl p-3.5">
+          <h4 class="text-xs font-semibold text-gray-300 mb-1">ዝርዝር መረጃ</h4>
+          <p id="modalDescription" class="text-xs text-gray-300 leading-relaxed whitespace-pre-line"></p>
+        </div>
+
+        <!-- Seller Contact, Report & Block Actions -->
+        <div class="bg-[#111317] border border-[#2d323c] rounded-2xl p-3.5 flex flex-wrap items-center justify-between gap-2">
+          <div class="min-w-0">
+            <p class="text-[11px] text-gray-400">ሻጭ</p>
+            <p id="modalSellerName" class="text-sm font-bold text-white truncate">ስም</p>
+            <p id="modalSellerPhone" class="text-xs text-emerald-400 font-medium mt-0.5">09...</p>
+          </div>
+          <div class="flex items-center gap-2 shrink-0">
+            <button
+              type="button"
+              id="modalCopyPhoneBtn"
+              class="text-[11px] font-medium px-2.5 py-2 rounded-xl bg-[#242830] text-gray-200 border border-[#343a46] active:scale-95 transition"
+            >
+              ቁጥር ቅዳ
+            </button>
+            <button
+              type="button"
+              id="modalReportBtn"
+              class="text-[11px] font-medium px-2.5 py-2 rounded-xl bg-rose-500/10 text-rose-400 border border-rose-500/30 active:scale-95 transition"
+            >
+              ሪፖርት ያድርጉ
+            </button>
+            <button
+              type="button"
+              id="modalBlockBtn"
+              class="text-[11px] font-medium px-2.5 py-2 rounded-xl bg-amber-500/10 text-amber-300 border border-amber-500/30 active:scale-95 transition"
+            >
+              አግድ
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sticky Direct Phone Call Button -->
+      <div class="p-3.5 border-t border-[#2d323c] bg-[#171a20]">
+        <a
+          id="modalCallLink"
+          href="tel:"
+          class="w-full py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-sm flex items-center justify-center gap-2 shadow-lg active:scale-[0.99] transition"
+        >
+          <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M6.62 10.79a15.053 15.053 0 006.59 6.59l2.2-2.2a1 1 0 011.01-.24c1.12.37 2.33.57 3.58.57a1 1 0 011 1V20a1 1 0 01-1 1C10.07 21 3 13.93 3 5a1 1 0 011-1h3.5a1 1 0 011 1c0 1.25.2 2.46.57 3.58a1 1 0 01-.25 1.01l-2.2 2.2z" />
+          </svg>
+          <span>ይደውሉ</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== REPORT MODAL ==================== -->
+  <div id="reportModal" class="fixed inset-0 z-50 hidden bg-black/80 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-[#1b1e24] border border-[#2d323c] rounded-2xl p-4 space-y-3.5">
+      <div class="flex items-center justify-between">
+        <h3 class="text-sm font-bold text-white">ማስታወቂያውን ሪፖርት ያድርጉ</h3>
+        <button type="button" id="closeReportModalBtn" class="text-gray-400 hover:text-white text-sm">✕</button>
+      </div>
+      <p class="text-xs text-gray-400">ይህ ማስታወቂያ አጭበርባሪ ወይም ተገቢ ያልሆነ ከሆነ ምክንያቱን ይምረጡ፦</p>
+      <div class="space-y-2 text-xs">
+        <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#111317] border border-[#2d323c] cursor-pointer">
+          <input type="radio" name="reportReason" value="አጭበርባሪ ወይም የተሳሳተ መረጃ" checked class="accent-emerald-500" />
+          <span>አጭበርባሪ ወይም የተሳሳተ መረጃ</span>
+        </label>
+        <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#111317] border border-[#2d323c] cursor-pointer">
+          <input type="radio" name="reportReason" value="የተከለከለ ወይም ህገ-ወጥ እቃ" class="accent-emerald-500" />
+          <span>የተከለከለ ወይም ህገ-ወጥ እቃ</span>
+        </label>
+        <label class="flex items-center gap-2.5 p-2.5 rounded-xl bg-[#111317] border border-[#2d323c] cursor-pointer">
+          <input type="radio" name="reportReason" value="ተደጋጋሚ ወይም የማይሰራ ስልክ" class="accent-emerald-500" />
+          <span>ተደጋጋሚ ወይም የማይሰራ ስልክ</span>
+        </label>
+      </div>
+      <div class="flex gap-2 pt-1">
+        <button type="button" id="cancelReportBtn" class="flex-1 py-2.5 rounded-xl bg-[#242830] text-gray-300 text-xs font-semibold">
+          ተመለስ
+        </button>
+        <button type="button" id="submitReportBtn" class="flex-1 py-2.5 rounded-xl bg-rose-600 text-white text-xs font-semibold">
+          ሪፖርት ላክ
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== PRIVACY POLICY MODAL ==================== -->
+  <div id="privacyModal" class="fixed inset-0 z-50 hidden bg-black/80 flex items-center justify-center p-4">
+    <div class="w-full max-w-sm bg-[#1b1e24] border border-[#2d323c] rounded-2xl p-4 space-y-3 max-h-[82vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-[#2d323c] pb-2.5">
+        <h3 class="text-sm font-bold text-white">የግላዊነት ፖሊሲ (Privacy Policy)</h3>
+        <button type="button" id="closePrivacyModalBtn" class="text-gray-400 hover:text-white text-sm">✕</button>
+      </div>
+      <div class="space-y-2.5 text-xs text-gray-300 leading-relaxed">
+        <p><strong>1. ያለምንም ምዝገባ መግዛት፦</strong> ገዢዎች በናዝራ (Nazra) የወጡ ማስታወቂያዎችን ያለምንም ምዝገባ በቀጥታ ማየት ይችላሉ።</p>
+        <p><strong>2. የሻጭ መረጃ መታየት፦</strong> ሻጮች ሲለጥፉ የሚያስገቡት ስም እና ስልክ ቁጥር ገዢዎች በቀጥታ እንዲደውሉላቸው በማስታወቂያው ላይ ይታያል።</p>
+        <p><strong>3. የ30 ቀን (1 ወር) ገደብ፦</strong> እያንዳንዱ ልጥፍ ከተለጠፈ ከ1 ወር (30 ቀን) በኋላ በራስ-ሰር ይጠፋል።</p>
+        <p><strong>4. የደህንነት ቁጥጥር፦</strong> ተገቢ ያልሆኑ ማስታወቂያዎችን በ«ሪፖርት ያድርጉ» ወይም በ«አግድ» ማገድ ይችላሉ፤ የታገዱትንም በመገለጫ መልሶ መክፈት ይቻላል።</p>
+      </div>
+      <button type="button" id="ackPrivacyBtn" class="w-full py-2.5 rounded-xl bg-emerald-600 text-white text-xs font-semibold">
+        ተረድቻለሁ
+      </button>
+    </div>
+  </div>
+
+  <!-- Non-blocking Toast Banner (Replaces alert()) -->
+  <div id="toastBox" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden max-w-[90vw] px-4 py-2.5 rounded-xl bg-gray-900 border border-emerald-500/50 text-white text-xs font-medium shadow-xl text-center">
+    <span id="toastText"></span>
+  </div>
+
+  <script>
+    (function () {
+      const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+      const STORAGE_LISTINGS_KEY = 'nazra_adama_listings_v3';
+      const STORAGE_PROFILE_KEY = 'nazra_adama_profile_v3';
+      const STORAGE_REPORTS_KEY = 'nazra_adama_reports_v3';
+      const STORAGE_BLOCKED_KEY = 'nazra_adama_blocked_v1';
+      const STORAGE_TG_CODE_REQUIRED_KEY = 'nazra_adama_tg_code_required_v1';
+
+      // Optional Telegram Bot Link configuration (left empty for now as agreed)
+      const CONFIGURED_TELEGRAM_BOT_URL = '';
+
+      // Full Category & Subcategory Taxonomy for Adama (Nazret)
+      const CATEGORIES = [
+        {
+          id: 'all',
+          label: 'ሁሉም',
+          subcategories: []
+        },
+        {
+          id: 'residential',
+          label: 'ቤት እና ኪራይ',
+          subcategories: [
+            'አፓርታማ ለኪራይ',
+            'የመኖሪያ ቤት ለኪራይ',
+            'ክፍል ለኪራይ',
+            'ቤት ለሽያጭ',
+            'ኮንዶሚኒየም'
+          ]
+        },
+        {
+          id: 'commercial_rent',
+          label: 'የንግድ ንብረት ለኪራይ',
+          subcategories: [
+            'ሱቅ / ሸቀጣ ሸቀጥ ቤት',
+            'ቢሮ ለኪራይ',
+            'መጋዘን / ስቶር',
+            'ካፌ / ሬስቶራንት ቦታ',
+            'አዳራሽ / ቦታ ለኪራይ'
+          ]
+        },
+        {
+          id: 'vehicles_rent',
+          label: 'ተሽከርካሪዎች ለኪራይ',
+          subcategories: [
+            'የግል መኪና ለኪራይ',
+            'ሚኒባስ / ቫን ለኪራይ',
+            'የጭነት መኪና / ሲኖትራክ',
+            'ባጃጅ / ሞተር ኪራይ'
+          ]
+        },
+        {
+          id: 'gaming_zone',
+          label: 'የጌም ዞን እቃዎች ለኪራይ እና ለሽያጭ',
+          subcategories: [
+            'PlayStation (PS4 / PS5)',
+            'Gaming TV / Monitor',
+            'Controller / Headset / Chair',
+            'ሙሉ ጌም ዞን ጥቅል (ኪራይ ወይም ሽያጭ)'
+          ]
+        },
+        {
+          id: 'electronics',
+          label: 'ስልክ እና ኤሌክትሮኒክስ',
+          subcategories: [
+            'ስማርት ስልክ',
+            'ላፕቶፕ እና ኮምፒውተር',
+            'ቲቪ እና ድምጽ ማጉያ',
+            'የቤት ኤሌክትሮኒክስ'
+          ]
+        },
+        {
+          id: 'jobs',
+          label: 'ስራዎች',
+          subcategories: [
+            'የሽያጭ እና ግብይት',
+            'የቢሮ እና አስተዳደር',
+            'መንጃ ፈቃድ / ሹፌር',
+            'ሆቴል እና ካፌ ስራ',
+            'የጊዜያዊ / ዕለታዊ ስራ'
+          ]
+        },
+        {
+          id: 'cv_seekers',
+          label: 'የስራ ፈላጊ ሲቪዎች',
+          subcategories: [
+            'ዲግሪ / ዲፕሎማ ያላቸው',
+            'የቴክኒክ እና ሙያ (TVET)',
+            'ሹፌሮች እና ረዳቶች',
+            'የሽያጭ እና ደንበኛ አገልግሎት'
+          ]
+        },
+        {
+          id: 'business_industry',
+          label: 'ንግድ እና ኢንዱስትሪ',
+          subcategories: [
+            'የፋብሪካ እና የማምረቻ መሳሪያ',
+            'የንግድ ድርጅት ሽያጭ / ርክክብ',
+            'ጥሬ እቃ እና ጅምላ አቅርቦት',
+            'የግንባታ እና ኢንዱስትሪ እቃ'
+          ]
+        },
+        {
+          id: 'other',
+          label: 'ሌሎች እቃዎች',
+          subcategories: [
+            'የቤት እቃ እና ፈርኒቸር',
+            'ልብስ እና ጫማ',
+            'የግብርና እና እንስሳት',
+            'አጠቃላይ'
+          ]
+        }
+      ];
+
+      // SVG Data-URI Placeholder Generator (Zero external broken image dependencies)
+      function makePlaceholderPhoto(bgHex, accentHex, badgeText, subText) {
+        const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="600" height="450" viewBox="0 0 600 450">
+          <rect width="600" height="450" fill="${bgHex}"/>
+          <circle cx="510" cy="80" r="110" fill="${accentHex}" fill-opacity="0.14"/>
+          <circle cx="90" cy="390" r="130" fill="${accentHex}" fill-opacity="0.10"/>
+          <rect x="36" y="36" width="528" height="378" rx="24" fill="none" stroke="${accentHex}" stroke-opacity="0.28" stroke-width="2"/>
+          <text x="300" y="205" text-anchor="middle" fill="#f9fafb" font-family="sans-serif" font-size="34" font-weight="700">${escapeXml(badgeText)}</text>
+          <text x="300" y="250" text-anchor="middle" fill="${accentHex}" font-family="sans-serif" font-size="22" font-weight="600">${escapeXml(subText)}</text>
+          <text x="300" y="365" text-anchor="middle" fill="#9ca3af" font-family="sans-serif" font-size="16">ናዝራ · Nazra — አዳማ</text>
+        </svg>`;
+        return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+      }
+
+      function escapeXml(str) {
+        return String(str || '')
+          .replace(/&/g, '&amp;')
+          .replace(/</g, '&lt;')
+          .replace(/>/g, '&gt;')
+          .replace(/"/g, '&quot;');
+      }
+
+      // Seed Listings in Adama (All created within 30 days)
+      function getSeedListings() {
+        const now = Date.now();
+        const day = 24 * 60 * 60 * 1000;
+        return [
+          {
+            id: 'seed-1',
+            title: 'ባለ 2 መኝታ አፓርታማ — ፖስታ ቤት አካባቢ',
+            mainCategory: 'residential',
+            subCategory: 'አፓርታማ ለኪራይ',
+            priceText: '18,000 / ወር',
+            neighborhood: 'ፖስታ ቤት',
+            condition: 'አዲስ የተቀባ',
+            spec: '2 መኝታ፣ ሳሎን፣ 2 መታጠቢያ',
+            paymentTerm: 'ወርሃዊ / የ3 ወር ቅድሚያ',
+            details: 'በአዳማ ፖስታ ቤት ዋና መንገድ ቅርብ፣ 24 ሰዓት ውሃ እና ጸጥታ ያለው ዘመናዊ አፓርታማ ለኪራይ ዝግጁ ነው።',
+            extraNote: 'መኪና ማቆሚያ አለው',
+            sellerName: 'አበበ ከበደ',
+            sellerPhone: '0911223344',
+            isMine: false,
+            sold: false,
+            createdAt: now - 1 * day,
+            photos: [
+              makePlaceholderPhoto('#15221c', '#34d399', '2 መኝታ አፓርታማ', '18,000 ብር / ወር'),
+              makePlaceholderPhoto('#13242a', '#38bdf8', 'ሰፊ ሳሎን እና ኩሽና', 'አዳማ — ፖስታ ቤት')
+            ]
+          },
+          {
+            id: 'seed-2',
+            title: 'PS5 + 2 Controller + 55" TV ለኪራይ / ሽያጭ',
+            mainCategory: 'gaming_zone',
+            subCategory: 'PlayStation (PS4 / PS5)',
+            priceText: 'በስምምነት',
+            neighborhood: 'ቀበሌ 04',
+            condition: 'በጣም ጥሩ ሁኔታ',
+            spec: 'PS5 Disc + 2 Pads + 55" 4K TV',
+            paymentTerm: 'በስምምነት',
+            details: 'ለጌም ዞን መክፈቻ ወይም ለቤት አገልግሎት የሚሆን ንጹህ PlayStation 5 ከስክሪን እና መቆጣጠሪያዎች ጋር።',
+            extraNote: 'በአዳማ ውስጥ ማድረስ ይቻላል',
+            sellerName: 'ዳዊት ተስፋዬ',
+            sellerPhone: '0922334455',
+            isMine: false,
+            sold: false,
+            createdAt: now - 2 * day,
+            photos: [
+              makePlaceholderPhoto('#1b1830', '#a78bfa', 'PS5 GAMING SETUP', 'በስምምነት'),
+              makePlaceholderPhoto('#24192b', '#f472b6', '55" 4K DISPLAY', 'አዳማ — ቀበሌ 04')
+            ]
+          },
+          {
+            id: 'seed-3',
+            title: 'የንግድ ሱቅ / ቦታ ለኪራይ — ፍራንኮ አካባቢ',
+            mainCategory: 'commercial_rent',
+            subCategory: 'ሱቅ / ሸቀጣ ሸቀጥ ቤት',
+            priceText: '12,500 / ወር',
+            neighborhood: 'ፍራንኮ',
+            condition: 'ዝግጁ',
+            spec: '32 ካሬ ሜትር፣ በርጩማና መደርደሪያ ያለው',
+            paymentTerm: 'ወርሃዊ',
+            details: 'በሰው እንቅስቃሴ የበዛበት የፍራንኮ አካባቢ ለሸቀጣ ሸቀጥ፣ ለሞባይል ሱቅ ወይም ለቢሮ የሚሆን ሱቅ።',
+            extraNote: 'የራሱ መብራት ቆጣሪ አለው',
+            sellerName: 'ሰላማዊት ኃይሉ',
+            sellerPhone: '0933445566',
+            isMine: false,
+            sold: false,
+            createdAt: now - 3 * day,
+            photos: [
+              makePlaceholderPhoto('#14251e', '#4ade80', 'የንግድ ሱቅ ለኪራይ', '12,500 ብር / ወር')
+            ]
+          },
+          {
+            id: 'seed-4',
+            title: 'Toyota Corolla / ቫን ለዕለታዊ እና ወርሃዊ ኪራይ',
+            mainCategory: 'vehicles_rent',
+            subCategory: 'የግል መኪና ለኪራይ',
+            priceText: '3,500 / ቀን',
+            neighborhood: 'አስቱ / መሃል አዳማ',
+            condition: 'ንጹህ እና አስተማማኝ',
+            spec: 'አውቶማቲክ፣ AC የሚሰራ',
+            paymentTerm: 'በቀን ወይም በሳምንት',
+            details: 'በአዳማ ከተማ ውስጥ እና ለአጭር ጉዞ የሚሆን ምቹ መኪና ከሹፌር ጋር ወይም ያለሹፌር በስምምነት።',
+            extraNote: 'መታወቂያ እና መንጃ ፈቃድ ያስፈልጋል',
+            sellerName: 'ብርሃኑ አለሙ',
+            sellerPhone: '0944556677',
+            isMine: false,
+            sold: false,
+            createdAt: now - 4 * day,
+            photos: [
+              makePlaceholderPhoto('#17212e', '#60a5fa', 'ተሽከርካሪ ለኪራይ', '3,500 ብር / ቀን')
+            ]
+          },
+          {
+            id: 'seed-5',
+            title: 'የሽያጭ እና ደንበኛ አገልግሎት ሰራተኛ ይፈለጋል',
+            mainCategory: 'jobs',
+            subCategory: 'የሽያጭ እና ግብይት',
+            priceText: '8,500 / ወር',
+            neighborhood: 'ቦሌ / አዳማ',
+            condition: 'ሙሉ ጊዜ',
+            spec: 'ቢያንስ 1 ዓመት የሽያጭ ልምድ',
+            paymentTerm: 'ወርሃዊ ደመወዝ + ኮሚሽን',
+            details: 'በአዳማ የሚገኝ የንግድ ማዕከል ታታሪ፣ ፈጣን እና ደንበኞችን በአክብሮት የሚያስተናግድ ሰራተኛ ይፈልጋል።',
+            extraNote: 'በአካል ወይም በስልክ ያነጋግሩ',
+            sellerName: 'መቅደስ ታደሰ',
+            sellerPhone: '0955667788',
+            isMine: false,
+            sold: false,
+            createdAt: now - 5 * day,
+            photos: [
+              makePlaceholderPhoto('#241f14', '#fbbf24', 'ክፍት የስራ ቦታ', '8,500 ብር / ወር')
+            ]
+          },
+          {
+            id: 'seed-6',
+            title: 'BSc Accounting & Finance — የስራ ፈላጊ ሲቪ',
+            mainCategory: 'cv_seekers',
+            subCategory: 'ዲግሪ / ዲፕሎማ ያላቸው',
+            priceText: 'በስምምነት',
+            neighborhood: 'አዳማ',
+            condition: 'ዝግጁ',
+            spec: 'Peachtree / QuickBooks / Excel',
+            paymentTerm: 'በስምምነት',
+            details: 'በሂሳብ እና ፋይናንስ የተመረቀ፣ በኮምፒውተር እና በሂሳብ አያያዝ ብቁ የሆነ ስራ ፈላጊ በአዳማ ለመስራት ዝግጁ ነው።',
+            extraNote: 'ለቃለ-መጠይቅ በማንኛውም ቀን ዝግጁ',
+            sellerName: 'ዮሐንስ ግርማ',
+            sellerPhone: '0966778899',
+            isMine: false,
+            sold: false,
+            createdAt: now - 6 * day,
+            photos: [
+              makePlaceholderPhoto('#162326', '#2dd4bf', 'የስራ ፈላጊ ሲቪ', 'Accounting & Finance')
+            ]
+          }
+        ];
+      }
+
+      // Application State
+      let state = {
+        activeTab: 'home',
+        selectedMainCategory: 'all',
+        selectedSubCategory: 'all',
+        searchQuery: '',
+        listings: [],
+        profile: { name: '', phone: '' },
+        blockedIds: [],
+        requireTelegramCode: false,
+        pendingPhotos: [], // Compressed JPEG data URLs (1–5)
+        pendingPhotoNames: [],
+        manualCategoryOverride: false,
+        activeModalListingId: null
+      };
+
+      // Safe localStorage helpers
+      function safeGetItem(key) {
+        try {
+          return localStorage.getItem(key);
+        } catch (err) {
+          return null;
+        }
+      }
+
+      function safeSetItem(key, val) {
+        try {
+          localStorage.setItem(key, val);
+        } catch (err) {
+          // Ignore storage quota or private mode errors gracefully
+        }
+      }
+
+      // Show non-blocking toast message
+      let toastTimer = null;
+      function showToast(msg) {
+        const box = document.getElementById('toastBox');
+        const textEl = document.getElementById('toastText');
+        if (!box || !textEl) return;
+        textEl.textContent = msg;
+        box.classList.remove('hidden');
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          box.classList.add('hidden');
+        }, 2800);
+      }
+
+      // Remove listings older than 30 days (1 month)
+      function pruneExpiredListings(items) {
+        const cutoff = Date.now() - THIRTY_DAYS_MS;
+        return (Array.isArray(items) ? items : []).filter((item) => {
+          const created = Number(item.createdAt) || Date.now();
+          return created >= cutoff;
+        });
+      }
+
+      function persistListings() {
+        safeSetItem(STORAGE_LISTINGS_KEY, JSON.stringify(state.listings));
+      }
+
+      function persistBlocked() {
+        safeSetItem(STORAGE_BLOCKED_KEY, JSON.stringify(state.blockedIds));
+      }
+
+      function loadState() {
+        try {
+          const savedTgReq = safeGetItem(STORAGE_TG_CODE_REQUIRED_KEY);
+          if (savedTgReq !== null) {
+            state.requireTelegramCode = savedTgReq === 'true';
+          }
+        } catch (e) {}
+
+        try {
+          const savedProfile = safeGetItem(STORAGE_PROFILE_KEY);
+          if (savedProfile) {
+            const parsed = JSON.parse(savedProfile);
+            if (parsed && typeof parsed === 'object') {
+              state.profile = {
+                name: String(parsed.name || ''),
+                phone: String(parsed.phone || '')
+              };
+            }
+          }
+        } catch (e) {}
+
+        try {
+          const savedBlocked = safeGetItem(STORAGE_BLOCKED_KEY);
+          if (savedBlocked) {
+            const parsedBlocked = JSON.parse(savedBlocked);
+            if (Array.isArray(parsedBlocked)) {
+              state.blockedIds = parsedBlocked.map(String);
+            }
+          }
+        } catch (e) {}
+
+        try {
+          const rawListings = safeGetItem(STORAGE_LISTINGS_KEY);
+          if (rawListings) {
+            const parsed = JSON.parse(rawListings);
+            state.listings = pruneExpiredListings(parsed);
+          } else {
+            state.listings = getSeedListings();
+          }
+        } catch (e) {
+          state.listings = getSeedListings();
+        }
+
+        persistListings();
+      }
+
+      // Format relative age in Amharic (with 30-day remaining hint)
+      function formatRelativeTime(createdAt) {
+        const elapsed = Math.max(0, Date.now() - Number(createdAt || Date.now()));
+        const mins = Math.floor(elapsed / 60000);
+        if (mins < 1) return 'አሁን';
+        if (mins < 60) return `ከ${mins} ደቂቃ በፊት`;
+        const hours = Math.floor(mins / 60);
+        if (hours < 24) return `ከ${hours} ሰዓት በፊት`;
+        const days = Math.floor(hours / 24);
+        return `ከ${days} ቀን በፊት`;
+      }
+
+      function formatPriceDisplay(rawPrice) {
+        const cleaned = String(rawPrice || '').trim();
+        if (!cleaned || cleaned === 'በስምምነት') return 'በስምምነት';
+        if (/birr|ብር|etb/i.test(cleaned)) return cleaned;
+        return `${cleaned} ብር`;
+      }
+
+      // Build concise card summary & full detail text from the 7 optional boxes
+      function buildListingSummaries(item) {
+        const parts = [];
+        if (item.neighborhood) parts.push(`ቦታ፦ ${item.neighborhood}`);
+        if (item.condition) parts.push(`ሁኔታ፦ ${item.condition}`);
+        if (item.spec) parts.push(`መጠን/ሞዴል፦ ${item.spec}`);
+        if (item.paymentTerm) parts.push(`ክፍያ፦ ${item.paymentTerm}`);
+        if (item.details) parts.push(`ዝርዝር፦ ${item.details}`);
+        if (item.extraNote) parts.push(`ማስታወሻ፦ ${item.extraNote}`);
+
+        const cardSummary = parts.length > 0
+          ? parts.join(' • ')
+          : `${item.neighborhood || 'አዳማ'} • በቀጥታ ይደውሉ`;
+
+        const fullDetail = parts.length > 0
+          ? parts.join('\n')
+          : 'ተጨማሪ ዝርዝር አልተሞላም። ለበለጠ መረጃ ሻጩን በቀጥታ ይደውሉ።';
+
+        return { cardSummary, fullDetail };
+      }
+
+      // AI Keyword Category Classifier (with manual override support)
+      function detectCategoryFromText(text) {
+        const q = String(text || '').toLowerCase();
+
+        if (/ps4|ps5|playstation|ጌም|gaming|controller|joystick|game zone|ጌም ዞን/.test(q)) {
+          return { main: 'gaming_zone', sub: 'PlayStation (PS4 / PS5)', reason: 'AI፦ ጌም ዞን' };
+        }
+        if (/ሱቅ|ሸቀጣ|ቢሮ|መጋዘን|ስቶር|ካፌ|ሬስቶራንት|ንግድ ቤት|commercial|shop|office/.test(q)) {
+          return { main: 'commercial_rent', sub: 'ሱቅ / ሸቀጣ ሸቀጥ ቤት', reason: 'AI፦ የንግድ ንብረት' };
+        }
+        if (/አፓርታማ|መኖሪያ|ክፍል|ኮንዶሚኒየም|ቤት|apartment|house|rent|ኪራይ/.test(q)) {
+          return { main: 'residential', sub: 'አፓርታማ ለኪራይ', reason: 'AI፦ ቤት እና ኪራይ' };
+        }
+        if (/መኪና|ሚኒባስ|ቫን|ባጃጅ|ሞተር|ሲኖትራክ|car|vehicle|ሹፌር/.test(q)) {
+          return { main: 'vehicles_rent', sub: 'የግል መኪና ለኪራይ', reason: 'AI፦ ተሽከርካሪዎች' };
+        }
+        if (/ስልክ|phone|samsung|iphone|redmi|tecno|ላፕቶፕ|laptop|ኮምፒውተር|tv|ቲቪ/.test(q)) {
+          return { main: 'electronics', sub: 'ስማርት ስልክ', reason: 'AI፦ ስልክ እና ኤሌክትሮኒክስ' };
+        }
+        if (/cv|ሲቪ|ስራ ፈላጊ|ተመራቂ|ዲግሪ|ዲፕሎማ/.test(q)) {
+          return { main: 'cv_seekers', sub: 'ዲግሪ / ዲፕሎማ ያላቸው', reason: 'AI፦ የስራ ፈላጊ ሲቪ' };
+        }
+        if (/ስራ|ቅጥር|ሰራተኛ|vacant|job|ደመወዝ/.test(q)) {
+          return { main: 'jobs', sub: 'የሽያጭ እና ግብይት', reason: 'AI፦ ስራዎች' };
+        }
+        if (/ፋብሪካ|ማምረቻ|ኢንዱስትሪ|ጅምላ|ንግድ|industry|business/.test(q)) {
+          return { main: 'business_industry', sub: 'የንግድ ድርጅት ሽያጭ / ርክክብ', reason: 'AI፦ ንግድ እና ኢንዱስትሪ' };
+        }
+        return null;
+      }
+
+      function populateSellCategoryDropdowns(selectedMain, selectedSub) {
+        const mainSelect = document.getElementById('sellMainCategory');
+        const subSelect = document.getElementById('sellSubCategory');
+        if (!mainSelect || !subSelect) return;
+
+        const selectableMains = CATEGORIES.filter((c) => c.id !== 'all');
+        mainSelect.innerHTML = selectableMains
+          .map((c) => `<option value="${c.id}">${c.label}</option>`)
+          .join('');
+
+        const validMain = selectableMains.some((c) => c.id === selectedMain)
+          ? selectedMain
+          : selectableMains[0].id;
+        mainSelect.value = validMain;
+
+        const mainObj = selectableMains.find((c) => c.id === validMain);
+        const subs = mainObj ? mainObj.subcategories : [];
+        subSelect.innerHTML = subs
+          .map((s) => `<option value="${escapeXml(s)}">${escapeXml(s)}</option>`)
+          .join('');
+
+        if (selectedSub && subs.includes(selectedSub)) {
+          subSelect.value = selectedSub;
+        }
+      }
+
+      // Render Main Category Chips & Subcategory Chips on Home
+      function renderCategoryFilters() {
+        const mainContainer = document.getElementById('mainCategoryChips');
+        const subContainer = document.getElementById('subCategoryChips');
+        if (!mainContainer || !subContainer) return;
+
+        mainContainer.innerHTML = CATEGORIES.map((cat) => {
+          const active = state.selectedMainCategory === cat.id;
+          return `
+            <button
+              type="button"
+              data-main-cat="${cat.id}"
+              class="shrink-0 px-3 py-1.5 rounded-full text-xs font-semibold border transition active:scale-95 ${
+                active
+                  ? 'bg-emerald-600 text-white border-emerald-500 shadow-sm'
+                  : 'bg-[#1b1e24] text-gray-300 border-[#2d323c] hover:border-gray-500'
+              }"
+            >
+              ${escapeXml(cat.label)}
+            </button>
+          `;
+        }).join('');
+
+        const activeMainObj = CATEGORIES.find(
+          (c) => c.id === state.selectedMainCategory && c.id !== 'all'
+        );
+
+        if (activeMainObj && activeMainObj.subcategories.length > 0) {
+          subContainer.classList.remove('hidden');
+          subContainer.classList.add('flex');
+          const allSubBtn = `
+            <button
+              type="button"
+              data-sub-cat="all"
+              class="shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition ${
+                state.selectedSubCategory === 'all'
+                  ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                  : 'bg-[#1b1e24] text-gray-400 border-[#2d323c]'
+              }"
+            >
+              ሁሉም (${escapeXml(activeMainObj.label)})
+            </button>
+          `;
+          const subBtns = activeMainObj.subcategories
+            .map((sub) => {
+              const isSubActive = state.selectedSubCategory === sub;
+              return `
+                <button
+                  type="button"
+                  data-sub-cat="${escapeXml(sub)}"
+                  class="shrink-0 px-2.5 py-1 rounded-lg text-[11px] font-medium border transition ${
+                    isSubActive
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40'
+                      : 'bg-[#1b1e24] text-gray-400 border-[#2d323c]'
+                  }"
+                >
+                  ${escapeXml(sub)}
+                </button>
+              `;
+            })
+            .join('');
+          subContainer.innerHTML = allSubBtn + subBtns;
+        } else {
+          subContainer.classList.add('hidden');
+          subContainer.classList.remove('flex');
+          subContainer.innerHTML = '';
+        }
+      }
+
+      // Filter listings by category, subcategory, search query, active status, and blocked status
+      function getFilteredListings() {
+        const q = state.searchQuery.trim().toLowerCase();
+        return state.listings.filter((item) => {
+          if (item.sold) return false;
+          if (state.blockedIds.includes(item.id) || state.blockedIds.includes(item.sellerPhone)) {
+            return false;
+          }
+          if (state.selectedMainCategory !== 'all' && item.mainCategory !== state.selectedMainCategory) {
+            return false;
+          }
+          if (
+            state.selectedMainCategory !== 'all' &&
+            state.selectedSubCategory !== 'all' &&
+            item.subCategory !== state.selectedSubCategory
+          ) {
+            return false;
+          }
+          if (q) {
+            const haystack = [
+              item.title,
+              item.subCategory,
+              item.neighborhood,
+              item.condition,
+              item.spec,
+              item.paymentTerm,
+              item.details,
+              item.extraNote,
+              item.priceText,
+              item.sellerName
+            ]
+              .join(' ')
+              .toLowerCase();
+            if (!haystack.includes(q)) return false;
+          }
+          return true;
+        });
+      }
+
+      // Render 2-Column Side-by-Side Listing Grid
+      function renderHomeFeed() {
+        const grid = document.getElementById('listingsGrid');
+        const emptyEl = document.getElementById('emptyFeedState');
+        const headingEl = document.getElementById('feedHeading');
+        const countBadge = document.getElementById('feedCountBadge');
+        if (!grid || !emptyEl) return;
+
+        const mainObj = CATEGORIES.find((c) => c.id === state.selectedMainCategory);
+        if (headingEl) {
+          if (state.selectedMainCategory === 'all') {
+            headingEl.textContent = 'የቅርብ ጊዜ ልጥፎች';
+          } else if (state.selectedSubCategory !== 'all') {
+            headingEl.textContent = state.selectedSubCategory;
+          } else {
+            headingEl.textContent = mainObj ? mainObj.label : 'ልጥፎች';
+          }
+        }
+
+        const filtered = getFilteredListings();
+        if (countBadge) {
+          countBadge.textContent = `${filtered.length} ልጥፎች`;
+        }
+
+        if (filtered.length === 0) {
+          grid.innerHTML = '';
+          emptyEl.classList.remove('hidden');
+          return;
+        }
+
+        emptyEl.classList.add('hidden');
+        grid.innerHTML = filtered
+          .map((item) => {
+            const firstPhoto = Array.isArray(item.photos) && item.photos[0]
+              ? item.photos[0]
+              : makePlaceholderPhoto('#1b1e24', '#34d399', 'ናዝራ', 'አዳማ');
+            const photoCount = Array.isArray(item.photos) ? item.photos.length : 1;
+            const { cardSummary } = buildListingSummaries(item);
+
+            return `
+              <article
+                data-open-listing="${escapeXml(item.id)}"
+                class="bg-[#1b1e24] border border-[#2d323c] rounded-2xl overflow-hidden flex flex-col cursor-pointer active:scale-[0.99] transition shadow-sm"
+              >
+                <div class="relative aspect-[4/3] w-full bg-[#111317] overflow-hidden">
+                  <img
+                    src="${firstPhoto}"
+                    alt="${escapeXml(item.title)}"
+                    loading="lazy"
+                    class="w-full h-full object-cover"
+                  />
+                  ${
+                    photoCount > 1
+                      ? `<span class="absolute top-2 right-2 text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-black/70 text-white">1/${photoCount}</span>`
+                      : ''
+                  }
+                </div>
+
+                <div class="p-2.5 flex-1 flex flex-col justify-between gap-1.5">
+                  <div>
+                    <div class="text-xs sm:text-sm font-bold text-emerald-400 leading-tight">
+                      ${escapeXml(formatPriceDisplay(item.priceText))}
+                    </div>
+                    <h3 class="text-xs font-semibold text-white clamp-2 mt-0.5 leading-snug">
+                      ${escapeXml(item.title)}
+                    </h3>
+                    <p class="text-[11px] text-gray-400 clamp-2 mt-1 leading-snug">
+                      ${escapeXml(cardSummary)}
+                    </p>
+                  </div>
+
+                  <div class="pt-1.5 border-t border-[#262b35] flex items-center justify-between text-[10px] text-gray-400">
+                    <span class="truncate">${escapeXml(item.neighborhood || 'አዳማ')}</span>
+                    <span class="shrink-0 ml-1">${escapeXml(formatRelativeTime(item.createdAt))}</span>
+                  </div>
+                </div>
+              </article>
+            `;
+          })
+          .join('');
+      }
+
+      // Render 5 Photo Slots in Sell Form (Each empty slot has <label for="nazraGalleryInput">)
+      function renderPhotoSlots() {
+        const grid = document.getElementById('photoSlotsGrid');
+        const counter = document.getElementById('photoCounterText');
+        if (!grid) return;
+
+        if (counter) {
+          counter.textContent = `${state.pendingPhotos.length} / 5`;
+        }
+
+        let html = '';
+        for (let i = 0; i < 5; i++) {
+          const photoUrl = state.pendingPhotos[i];
+          if (photoUrl) {
+            html += `
+              <div class="relative aspect-square rounded-xl overflow-hidden border border-emerald-500/40 bg-[#111317]">
+                <img src="${photoUrl}" alt="ፎቶ ${i + 1}" class="w-full h-full object-cover" />
+                ${
+                  i === 0
+                    ? '<span class="absolute bottom-1 left-1 text-[9px] font-bold px-1.5 py-0.5 rounded bg-emerald-600 text-white">ዋና</span>'
+                    : ''
+                }
+                <button
+                  type="button"
+                  data-remove-photo="${i}"
+                  aria-label="ፎቶ አጥፋ"
+                  class="absolute top-1 right-1 w-5 h-5 rounded-full bg-black/75 text-white text-[10px] font-bold flex items-center justify-center"
+                >
+                  ✕
+                </button>
+              </div>
+            `;
+          } else {
+            html += `
+              <label
+                for="nazraGalleryInput"
+                class="aspect-square rounded-xl border border-dashed border-[#363c49] bg-[#111317] hover:border-emerald-500/60 flex flex-col items-center justify-center text-gray-400 cursor-pointer active:scale-95 transition"
+              >
+                <span class="text-base leading-none font-bold text-emerald-400">+</span>
+                <span class="text-[9px] mt-1">ፎቶ ${i + 1}</span>
+              </label>
+            `;
+          }
+        }
+        grid.innerHTML = html;
+      }
+
+      // Compress image file via <canvas> into lightweight JPEG data URL
+      function compressImageFile(file, maxDim = 900, quality = 0.76) {
+        return new Promise((resolve, reject) => {
+          const reader = new FileReader();
+          reader.onerror = () => reject(new Error('File read error'));
+          reader.onload = (ev) => {
+            const img = new Image();
+            img.onerror = () => reject(new Error('Image decode error'));
+            img.onload = () => {
+              let width = img.width || 800;
+              let height = img.height || 600;
+              if (width > maxDim || height > maxDim) {
+                if (width >= height) {
+                  height = Math.round((height * maxDim) / width);
+                  width = maxDim;
+                } else {
+                  width = Math.round((width * maxDim) / height);
+                  height = maxDim;
+                }
+              }
+              const canvas = document.createElement('canvas');
+              canvas.width = Math.max(1, width);
+              canvas.height = Math.max(1, height);
+              const ctx = canvas.getContext('2d');
+              if (!ctx) {
+                reject(new Error('Canvas context unavailable'));
+                return;
+              }
+              ctx.drawImage(img, 0, 0, canvas.width, canvas.height);
+              try {
+                const compressed = canvas.toDataURL('image/jpeg', quality);
+                resolve(compressed);
+              } catch (canvasErr) {
+                resolve(ev.target.result);
+              }
+            };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        });
+      }
+
+      // Handle native gallery selection (1–5 photos)
+      async function handleGalleryFilesSelected(fileList) {
+        if (!fileList || fileList.length === 0) return;
+
+        const remainingSlots = 5 - state.pendingPhotos.length;
+        if (remainingSlots <= 0) {
+          showToast('ከፍተኛው 5 ፎቶዎች ተሞልተዋል');
+          return;
+        }
+
+        const chosenFiles = Array.from(fileList)
+          .filter((f) => f && f.type && f.type.startsWith('image/'))
+          .slice(0, remainingSlots);
+
+        if (chosenFiles.length === 0) {
+          showToast('እባክዎ የፎቶ ፋይል (Image) ይምረጡ');
+          return;
+        }
+
+        const bar = document.getElementById('photoProcessingBar');
+        if (bar) {
+          bar.classList.remove('hidden');
+          bar.classList.add('flex');
+        }
+
+        for (const file of chosenFiles) {
+          try {
+            const compressedUrl = await compressImageFile(file);
+            state.pendingPhotos.push(compressedUrl);
+            state.pendingPhotoNames.push(file.name || 'photo');
+          } catch (err) {
+            showToast('አንዳንድ ፎቶዎችን መጫን አልተቻለም');
+          }
+        }
+
+        if (bar) {
+          bar.classList.add('hidden');
+          bar.classList.remove('flex');
+        }
+
+        renderPhotoSlots();
+      }
+
+      // Switch Bottom Tabs (home / sell / profile)
+      function switchTab(tabName) {
+        state.activeTab = tabName;
+        const views = {
+          home: document.getElementById('view-home'),
+          sell: document.getElementById('view-sell'),
+          profile: document.getElementById('view-profile')
+        };
+
+        Object.entries(views).forEach(([key, el]) => {
+          if (!el) return;
+          if (key === tabName) {
+            el.classList.remove('hidden');
+            el.classList.add('block');
+          } else {
+            el.classList.add('hidden');
+            el.classList.remove('block');
+          }
+        });
+
+        document.querySelectorAll('.nav-btn').forEach((btn) => {
+          const isActive = btn.getAttribute('data-tab') === tabName;
+          btn.classList.toggle('text-emerald-400', isActive);
+          btn.classList.toggle('font-semibold', isActive);
+          btn.classList.toggle('text-gray-400', !isActive);
+          btn.classList.toggle('font-medium', !isActive);
+        });
+
+        if (tabName === 'sell') {
+          const sellerNameEl = document.getElementById('sellerName');
+          const sellerPhoneEl = document.getElementById('sellerPhone');
+          if (sellerNameEl && !sellerNameEl.value.trim() && state.profile.name) {
+            sellerNameEl.value = state.profile.name;
+          }
+          if (sellerPhoneEl && !sellerPhoneEl.value.trim() && state.profile.phone) {
+            sellerPhoneEl.value = state.profile.phone;
+          }
+        } else if (tabName === 'profile') {
+          renderProfileView();
+        } else if (tabName === 'home') {
+          renderHomeFeed();
+        }
+
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Render Seller Profile, Active Listings ("ተሽጧል / አጥፋ"), and Blocked Items ("Unblock")
+      function renderProfileView() {
+        const nameInput = document.getElementById('profileNameInput');
+        const phoneInput = document.getElementById('profilePhoneInput');
+        if (nameInput) nameInput.value = state.profile.name || '';
+        if (phoneInput) phoneInput.value = state.profile.phone || '';
+
+        const myListings = state.listings.filter((item) => item.isMine && !item.sold);
+        const countEl = document.getElementById('myListingsCount');
+        const container = document.getElementById('myListingsContainer');
+        if (countEl) countEl.textContent = `${myListings.length} ልጥፎች`;
+
+        if (container) {
+          if (myListings.length === 0) {
+            container.innerHTML = `
+              <div class="bg-[#1b1e24] border border-[#2d323c] rounded-2xl p-5 text-center space-y-2">
+                <p class="text-xs font-semibold text-gray-300">እስካሁን የለጠፉት ንቁ ማስታወቂያ የለም</p>
+                <p class="text-[11px] text-gray-400">ከታች ያለውን «ሽጡ» ቁልፍ በመጫን ማስታወቂያ መለጠፍ ይችላሉ።</p>
+              </div>
+            `;
+          } else {
+            container.innerHTML = myListings
+              .map((item) => {
+                const thumb = item.photos && item.photos[0] ? item.photos[0] : '';
+                return `
+                  <div class="bg-[#1b1e24] border border-[#2d323c] rounded-2xl p-3 flex items-center gap-3">
+                    <img
+                      src="${thumb}"
+                      alt="${escapeXml(item.title)}"
+                      class="w-16 h-16 rounded-xl object-cover bg-[#111317] shrink-0"
+                    />
+                    <div class="flex-1 min-w-0">
+                      <p class="text-xs font-bold text-white truncate">${escapeXml(item.title)}</p>
+                      <p class="text-xs font-semibold text-emerald-400 mt-0.5">${escapeXml(formatPriceDisplay(item.priceText))}</p>
+                      <p class="text-[10px] text-gray-400 mt-0.5">${escapeXml(formatRelativeTime(item.createdAt))}</p>
+                    </div>
+                    <div class="flex flex-col gap-1.5 shrink-0">
+                      <button
+                        type="button"
+                        data-mark-sold="${escapeXml(item.id)}"
+                        class="px-2.5 py-1.5 rounded-lg bg-emerald-600/20 text-emerald-300 border border-emerald-500/30 text-[11px] font-semibold active:scale-95"
+                      >
+                        ተሽጧል
+                      </button>
+                      <button
+                        type="button"
+                        data-delete-mine="${escapeXml(item.id)}"
+                        class="px-2.5 py-1.5 rounded-lg bg-rose-600/20 text-rose-300 border border-rose-500/30 text-[11px] font-semibold active:scale-95"
+                      >
+                        አጥፋ
+                      </button>
+                    </div>
+                  </div>
+                `;
+              })
+              .join('');
+          }
+        }
+
+        // Blocked items & Unblock controls
+        const blockedBadge = document.getElementById('blockedCountBadge');
+        const blockedContainer = document.getElementById('blockedItemsContainer');
+        if (blockedBadge) blockedBadge.textContent = `${state.blockedIds.length} የታገዱ`;
+
+        if (blockedContainer) {
+          if (state.blockedIds.length === 0) {
+            blockedContainer.innerHTML = `
+              <div class="bg-[#1b1e24] border border-[#2d323c] rounded-2xl p-4 text-center text-[11px] text-gray-400">
+                ያገዱት ልጥፍ ወይም ሻጭ የለም።
+              </div>
+            `;
+          } else {
+            blockedContainer.innerHTML = state.blockedIds
+              .map((blockedKey) => {
+                const matchedListing = state.listings.find(
+                  (l) => l.id === blockedKey || l.sellerPhone === blockedKey
+                );
+                const labelText = matchedListing
+                  ? `${matchedListing.title} (${matchedListing.sellerName || matchedListing.sellerPhone})`
+                  : blockedKey;
+                return `
+                  <div class="bg-[#1b1e24] border border-[#2d323c] rounded-xl p-3 flex items-center justify-between gap-2">
+                    <span class="text-xs text-gray-200 truncate">${escapeXml(labelText)}</span>
+                    <button
+                      type="button"
+                      data-unblock-key="${escapeXml(blockedKey)}"
+                      class="shrink-0 px-3 py-1.5 rounded-lg bg-emerald-600 text-white text-[11px] font-semibold active:scale-95"
+                    >
+                      ክፈት (Unblock)
+                    </button>
+                  </div>
+                `;
+              })
+              .join('');
+          }
+        }
+      }
+
+      // Open Swipeable Multi-Photo Detail Modal
+      function openListingModal(listingId) {
+        const item = state.listings.find((l) => l.id === listingId);
+        if (!item) return;
+
+        state.activeModalListingId = item.id;
+        const modal = document.getElementById('detailModal');
+        if (!modal) return;
+
+        const mainCatObj = CATEGORIES.find((c) => c.id === item.mainCategory);
+        document.getElementById('modalMainCatTag').textContent = mainCatObj ? mainCatObj.label : 'ምድብ';
+        document.getElementById('modalSubCatTag').textContent = item.subCategory || 'አጠቃላይ';
+        document.getElementById('modalPrice').textContent = formatPriceDisplay(item.priceText);
+        document.getElementById('modalTitle').textContent = item.title;
+        document.getElementById('modalMeta').textContent =
+          `${item.neighborhood ? item.neighborhood + ' · ' : ''}አዳማ • ${formatRelativeTime(item.createdAt)}`;
+
+        const { fullDetail } = buildListingSummaries(item);
+        document.getElementById('modalDescription').textContent = fullDetail;
+
+        document.getElementById('modalSellerName').textContent = item.sellerName || 'ሻጭ';
+        document.getElementById('modalSellerPhone').textContent = item.sellerPhone || '';
+
+        const cleanPhone = String(item.sellerPhone || '').replace(/[^+\d]/g, '');
+        const callLink = document.getElementById('modalCallLink');
+        if (callLink) {
+          callLink.href = cleanPhone ? `tel:${cleanPhone}` : 'tel:';
+        }
+
+        // Build swipeable photo carousel
+        const photos = Array.isArray(item.photos) && item.photos.length > 0
+          ? item.photos
+          : [makePlaceholderPhoto('#1b1e24', '#34d399', 'ናዝራ', 'አዳማ')];
+
+        const carousel = document.getElementById('modalPhotoCarousel');
+        const dots = document.getElementById('modalPhotoDots');
+        const prevBtn = document.getElementById('modalPrevPhotoBtn');
+        const nextBtn = document.getElementById('modalNextPhotoBtn');
+
+        carousel.innerHTML = photos
+          .map(
+            (src, idx) => `
+              <div class="w-full shrink-0 snap-center aspect-[4/3] bg-[#111317] rounded-2xl overflow-hidden">
+                <img src="${src}" alt="${escapeXml(item.title)} - ${idx + 1}" class="w-full h-full object-cover" />
+              </div>
+            `
+          )
+          .join('');
+
+        carousel.scrollLeft = 0;
+
+        if (photos.length > 1) {
+          prevBtn.classList.remove('hidden');
+          nextBtn.classList.remove('hidden');
+          dots.innerHTML = photos
+            .map(
+              (_, idx) =>
+                `<span data-dot-idx="${idx}" class="w-2 h-2 rounded-full transition ${
+                  idx === 0 ? 'bg-emerald-400 w-4' : 'bg-gray-600'
+                }"></span>`
+            )
+            .join('');
+        } else {
+          prevBtn.classList.add('hidden');
+          nextBtn.classList.add('hidden');
+          dots.innerHTML = '';
+        }
+
+        carousel.onscroll = () => {
+          if (photos.length <= 1 || !carousel.clientWidth) return;
+          const activeIdx = Math.round(carousel.scrollLeft / carousel.clientWidth);
+          dots.querySelectorAll('[data-dot-idx]').forEach((dot, i) => {
+            dot.className =
+              i === activeIdx
+                ? 'w-4 h-2 rounded-full transition bg-emerald-400'
+                : 'w-2 h-2 rounded-full transition bg-gray-600';
+          });
+        };
+
+        prevBtn.onclick = () => {
+          carousel.scrollBy({ left: -carousel.clientWidth, behavior: 'smooth' });
+        };
+        nextBtn.onclick = () => {
+          carousel.scrollBy({ left: carousel.clientWidth, behavior: 'smooth' });
+        };
+
+        modal.classList.remove('hidden');
+      }
+
+      function closeListingModal() {
+        const modal = document.getElementById('detailModal');
+        if (modal) modal.classList.add('hidden');
+        state.activeModalListingId = null;
+      }
+
+      // Initialize App
+      function init() {
+        loadState();
+        populateSellCategoryDropdowns('residential', 'አፓርታማ ለኪራይ');
+        renderCategoryFilters();
+        renderHomeFeed();
+        renderPhotoSlots();
+        renderProfileView();
+
+        // Owner-controlled Telegram Code requirement toggle in Profile
+        const toggleBtn = document.getElementById('ownerTgCodeToggleBtn');
+        const statusText = document.getElementById('tgCodeRequirementStatusText');
+        const codeHint = document.getElementById('botCodeOptionalHint');
+        const codeInputEl = document.getElementById('botVerificationCode');
+
+        function syncTelegramCodeRequirementUi() {
+          const required = Boolean(state.requireTelegramCode);
+          if (toggleBtn) {
+            toggleBtn.setAttribute('aria-pressed', String(required));
+            toggleBtn.textContent = required ? 'ግዴታ፡ ነው' : 'ግዴታ፡ አይደለም';
+            toggleBtn.className = required
+              ? 'shrink-0 px-3 py-2 rounded-xl text-xs font-bold border transition active:scale-95 bg-emerald-600 text-white border-emerald-400'
+              : 'shrink-0 px-3 py-2 rounded-xl text-xs font-bold border transition active:scale-95 bg-[#111317] text-gray-300 border-[#2d323c]';
+          }
+          if (statusText) {
+            statusText.textContent = required
+              ? 'አሁን፦ ግዴታ ነው (ሲለጥፉ Code ማስገባት ያስፈልጋል)'
+              : 'አሁን፦ አማራጭ (በነፃ መለጠፍ ይቻላል)';
+          }
+          if (codeHint) {
+            codeHint.textContent = required ? '(ግዴታ)' : '(አማራጭ)';
+            codeHint.className = required ? 'text-rose-400 font-semibold' : 'text-gray-500';
+          }
+          if (codeInputEl) {
+            codeInputEl.placeholder = required
+              ? 'ከ Telegram Bot ያመጡትን Code እዚህ ይለጥፉ (ግዴታ)'
+              : 'ከ Telegram Bot ያገኙትን Code እዚህ ይለጥፉ (ባይኖርም «ለጥፍ» ይሰራል)';
+          }
+        }
+
+        if (toggleBtn) {
+          toggleBtn.addEventListener('click', () => {
+            state.requireTelegramCode = !state.requireTelegramCode;
+            safeSetItem(STORAGE_TG_CODE_REQUIRED_KEY, String(state.requireTelegramCode));
+            syncTelegramCodeRequirementUi();
+            showToast(
+              state.requireTelegramCode
+                ? 'የ Telegram Code ግዴታ ሆኗል'
+                : 'የ Telegram Code አማራጭ (ነፃ ልጥፍ) ሆኗል'
+            );
+          });
+        }
+        syncTelegramCodeRequirementUi();
+
+        // Configure optional Telegram Bot link slot & quick open button
+        const botSlot = document.getElementById('telegramBotSlot');
+        const tgLinkInput = document.getElementById('telegramBotLinkInput');
+        const openEnteredBotBtn = document.getElementById('openEnteredTgBotBtn');
+
+        function syncTgBotLinkUi() {
+          const customUrl = tgLinkInput ? tgLinkInput.value.trim() : '';
+          const activeUrl = customUrl || CONFIGURED_TELEGRAM_BOT_URL;
+          if (openEnteredBotBtn) {
+            if (activeUrl && /^https?:\/\//i.test(activeUrl)) {
+              openEnteredBotBtn.href = activeUrl;
+              openEnteredBotBtn.classList.remove('hidden');
+            } else {
+              openEnteredBotBtn.classList.add('hidden');
+            }
+          }
+          if (botSlot && CONFIGURED_TELEGRAM_BOT_URL) {
+            botSlot.innerHTML = `<a href="${escapeXml(CONFIGURED_TELEGRAM_BOT_URL)}" target="_blank" rel="noopener" class="underline">Telegram Bot</a>`;
+          }
+        }
+
+        if (tgLinkInput) {
+          tgLinkInput.addEventListener('input', syncTgBotLinkUi);
+        }
+        syncTgBotLinkUi();
+
+        // Bottom Navigation
+        document.querySelectorAll('.nav-btn').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const tab = btn.getAttribute('data-tab');
+            if (tab) switchTab(tab);
+          });
+        });
+
+        // Search Input
+        const searchInput = document.getElementById('searchInput');
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            state.searchQuery = e.target.value || '';
+            if (state.activeTab !== 'home') {
+              switchTab('home');
+            } else {
+              renderHomeFeed();
+            }
+          });
+        }
+
+        // Main & Sub Category Chip Clicks
+        document.getElementById('mainCategoryChips')?.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-main-cat]');
+          if (!btn) return;
+          state.selectedMainCategory = btn.getAttribute('data-main-cat') || 'all';
+          state.selectedSubCategory = 'all';
+          renderCategoryFilters();
+          renderHomeFeed();
+        });
+
+        document.getElementById('subCategoryChips')?.addEventListener('click', (e) => {
+          const btn = e.target.closest('[data-sub-cat]');
+          if (!btn) return;
+          state.selectedSubCategory = btn.getAttribute('data-sub-cat') || 'all';
+          renderCategoryFilters();
+          renderHomeFeed();
+        });
+
+        // Reset Filters Button
+        document.getElementById('resetFiltersBtn')?.addEventListener('click', () => {
+          state.selectedMainCategory = 'all';
+          state.selectedSubCategory = 'all';
+          state.searchQuery = '';
+          if (searchInput) searchInput.value = '';
+          renderCategoryFilters();
+          renderHomeFeed();
+        });
+
+        // Open Listing Modal from 2-Column Grid
+        document.getElementById('listingsGrid')?.addEventListener('click', (e) => {
+          const card = e.target.closest('[data-open-listing]');
+          if (!card) return;
+          const id = card.getAttribute('data-open-listing');
+          if (id) openListingModal(id);
+        });
+
+        // Close Detail Modal
+        document.getElementById('closeDetailModalBtn')?.addEventListener('click', closeListingModal);
+        document.getElementById('detailModal')?.addEventListener('click', (e) => {
+          if (e.target.id === 'detailModal') closeListingModal();
+        });
+
+        // Copy Seller Phone Number
+        document.getElementById('modalCopyPhoneBtn')?.addEventListener('click', () => {
+          const phone = document.getElementById('modalSellerPhone')?.textContent || '';
+          if (!phone) return;
+          const temp = document.createElement('textarea');
+          temp.value = phone;
+          temp.setAttribute('readonly', '');
+          temp.style.position = 'fixed';
+          temp.style.left = '-9999px';
+          document.body.appendChild(temp);
+          temp.select();
+          try {
+            document.execCommand('copy');
+            showToast('ስልክ ቁጥር ተቀድቷል');
+          } catch (err) {
+            showToast('መቅዳት አልተቻለም');
+          }
+          document.body.removeChild(temp);
+        });
+
+        // Block Seller / Listing Action
+        document.getElementById('modalBlockBtn')?.addEventListener('click', () => {
+          if (!state.activeModalListingId) return;
+          const targetItem = state.listings.find((l) => l.id === state.activeModalListingId);
+          const blockKey = targetItem?.sellerPhone || targetItem?.id || state.activeModalListingId;
+          if (!state.blockedIds.includes(blockKey)) {
+            state.blockedIds.push(blockKey);
+            persistBlocked();
+          }
+          closeListingModal();
+          renderHomeFeed();
+          renderProfileView();
+          showToast('ታግዷል (ከእይታ ተደብቋል)');
+        });
+
+        // Report Modal Flow
+        const reportModal = document.getElementById('reportModal');
+        document.getElementById('modalReportBtn')?.addEventListener('click', () => {
+          if (reportModal) reportModal.classList.remove('hidden');
+        });
+        document.getElementById('closeReportModalBtn')?.addEventListener('click', () => {
+          if (reportModal) reportModal.classList.add('hidden');
+        });
+        document.getElementById('cancelReportBtn')?.addEventListener('click', () => {
+          if (reportModal) reportModal.classList.add('hidden');
+        });
+        document.getElementById('submitReportBtn')?.addEventListener('click', () => {
+          const checked = document.querySelector('input[name="reportReason"]:checked');
+          const reason = checked ? checked.value : 'ሪፖርት ተደርጓል';
+          try {
+            const existing = JSON.parse(safeGetItem(STORAGE_REPORTS_KEY) || '[]');
+            existing.push({
+              listingId: state.activeModalListingId,
+              reason,
+              at: Date.now()
+            });
+            safeSetItem(STORAGE_REPORTS_KEY, JSON.stringify(existing));
+          } catch (e) {}
+          if (reportModal) reportModal.classList.add('hidden');
+          showToast('ሪፖርትዎ ተልኳል — እናመሰግናለን');
+        });
+
+        // Privacy Policy Modal Flow
+        const privacyModal = document.getElementById('privacyModal');
+        const openPrivacy = () => privacyModal && privacyModal.classList.remove('hidden');
+        const closePrivacy = () => privacyModal && privacyModal.classList.add('hidden');
+        document.getElementById('openPrivacyHeaderBtn')?.addEventListener('click', openPrivacy);
+        document.getElementById('openPrivacyProfileBtn')?.addEventListener('click', openPrivacy);
+        document.getElementById('closePrivacyModalBtn')?.addEventListener('click', closePrivacy);
+        document.getElementById('ackPrivacyBtn')?.addEventListener('click', closePrivacy);
+
+        // Native Gallery File Input Change
+        const galleryInput = document.getElementById('nazraGalleryInput');
+        if (galleryInput) {
+          galleryInput.addEventListener('change', async (e) => {
+            await handleGalleryFilesSelected(e.target.files);
+            e.target.value = '';
+          });
+        }
+
+        // Remove Photo Slot Button
+        document.getElementById('photoSlotsGrid')?.addEventListener('click', (e) => {
+          const removeBtn = e.target.closest('[data-remove-photo]');
+          if (!removeBtn) return;
+          const idx = Number(removeBtn.getAttribute('data-remove-photo'));
+          if (!Number.isNaN(idx) && idx >= 0 && idx < state.pendingPhotos.length) {
+            state.pendingPhotos.splice(idx, 1);
+            state.pendingPhotoNames.splice(idx, 1);
+            renderPhotoSlots();
+          }
+        });
+
+        // AI Auto-Categorization on Title / Details Input (respecting manual override)
+        const titleInput = document.getElementById('itemTitle');
+        const detailsInput = document.getElementById('itemDetails');
+        const mainSelect = document.getElementById('sellMainCategory');
+        const subSelect = document.getElementById('sellSubCategory');
+        const aiBadge = document.getElementById('aiCategoryBadge');
+
+        mainSelect?.addEventListener('change', () => {
+          state.manualCategoryOverride = true;
+          populateSellCategoryDropdowns(mainSelect.value, '');
+          if (aiBadge) aiBadge.textContent = 'በእጅ የተመረጠ';
+        });
+
+        subSelect?.addEventListener('change', () => {
+          state.manualCategoryOverride = true;
+          if (aiBadge) aiBadge.textContent = 'በእጅ የተመረጠ';
+        });
+
+        function runAiSuggestion() {
+          if (state.manualCategoryOverride) return;
+          const combined = `${titleInput?.value || ''} ${detailsInput?.value || ''}`.trim();
+          if (!combined) return;
+          const detected = detectCategoryFromText(combined);
+          if (detected) {
+            populateSellCategoryDropdowns(detected.main, detected.sub);
+            if (aiBadge) aiBadge.textContent = detected.reason;
+          }
+        }
+
+        titleInput?.addEventListener('input', runAiSuggestion);
+        detailsInput?.addEventListener('input', runAiSuggestion);
+
+        // Publish Ad Form Submit (Always active unless code is required by toggle & missing)
+        const sellForm = document.getElementById('sellForm');
+        sellForm?.addEventListener('submit', (e) => {
+          e.preventDefault();
+
+          const sellerNameEl = document.getElementById('sellerName');
+          const sellerPhoneEl = document.getElementById('sellerPhone');
+          const titleEl = document.getElementById('itemTitle');
+          const priceEl = document.getElementById('itemPrice');
+          const neighborhoodEl = document.getElementById('itemNeighborhood');
+          const conditionEl = document.getElementById('itemCondition');
+          const specEl = document.getElementById('itemSpec');
+          const paymentTermEl = document.getElementById('itemPaymentTerm');
+          const detailsEl = document.getElementById('itemDetails');
+          const extraNoteEl = document.getElementById('itemExtraNote');
+          const codeEl = document.getElementById('botVerificationCode');
+
+          const sellerName = (sellerNameEl?.value || '').trim();
+          const sellerPhone = (sellerPhoneEl?.value || '').trim();
+          const title = (titleEl?.value || '').trim();
+          const telegramCode = (codeEl?.value || '').trim();
+
+          if (state.pendingPhotos.length < 1) {
+            showToast('እባክዎ ቢያንስ 1 ፎቶ (1–5) ይምረጡ');
+            return;
+          }
+          if (!sellerName) {
+            showToast('እባክዎ የሻጭ ስም ያስገቡ');
+            sellerNameEl?.focus();
+            return;
+          }
+          if (!sellerPhone || sellerPhone.length < 9) {
+            showToast('እባክዎ ትክክለኛ ስልክ ቁጥር ያስገቡ');
+            sellerPhoneEl?.focus();
+            return;
+          }
+          if (!title) {
+            showToast('እባክዎ የማስታወቂያ ርዕስ ያስገቡ');
+            titleEl?.focus();
+            return;
+          }
+          if (state.requireTelegramCode && !telegramCode) {
+            showToast('እባክዎ ከ Telegram ያመጡትን Code ያስገቡ');
+            codeEl?.focus();
+            return;
+          }
+
+          const createdAt = Date.now();
+          const newListing = {
+            id: `ad-${createdAt}-${Math.random().toString(36).slice(2, 7)}`,
+            title,
+            mainCategory: mainSelect?.value || 'residential',
+            subCategory: subSelect?.value || 'አጠቃላይ',
+            priceText: (priceEl?.value || '').trim() || 'በስምምነት',
+            neighborhood: (neighborhoodEl?.value || '').trim() || 'አዳማ',
+            condition: (conditionEl?.value || '').trim(),
+            spec: (specEl?.value || '').trim(),
+            paymentTerm: (paymentTermEl?.value || '').trim(),
+            details: (detailsEl?.value || '').trim(),
+            extraNote: (extraNoteEl?.value || '').trim(),
+            sellerName,
+            sellerPhone,
+            isMine: true,
+            sold: false,
+            createdAt,
+            photos: state.pendingPhotos.slice(0, 5)
+          };
+
+          state.listings.unshift(newListing);
+          persistListings();
+
+          state.profile = { name: sellerName, phone: sellerPhone };
+          safeSetItem(STORAGE_PROFILE_KEY, JSON.stringify(state.profile));
+
+          // Reset form & photo buffer
+          sellForm.reset();
+          if (sellerNameEl) sellerNameEl.value = sellerName;
+          if (sellerPhoneEl) sellerPhoneEl.value = sellerPhone;
+          state.pendingPhotos = [];
+          state.pendingPhotoNames = [];
+          state.manualCategoryOverride = false;
+          if (aiBadge) aiBadge.textContent = 'AI ምደባ ዝግጁ';
+          populateSellCategoryDropdowns('residential', 'አፓርታማ ለኪራይ');
+          renderPhotoSlots();
+          syncTgBotLinkUi();
+
+          showToast('ማስታወቂያዎ ተለጥፏል (ለ30 ቀን ይቆያል)');
+          switchTab('home');
+        });
+
+        // Save Profile Form
+        document.getElementById('profileForm')?.addEventListener('submit', (e) => {
+          e.preventDefault();
+          const nameVal = (document.getElementById('profileNameInput')?.value || '').trim();
+          const phoneVal = (document.getElementById('profilePhoneInput')?.value || '').trim();
+          if (!nameVal || !phoneVal) {
+            showToast('እባክዎ ስም እና ስልክ ቁጥር ያስገቡ');
+            return;
+          }
+          state.profile = { name: nameVal, phone: phoneVal };
+          safeSetItem(STORAGE_PROFILE_KEY, JSON.stringify(state.profile));
+          showToast('መገለጫ ተቀምጧል');
+        });
+
+        // Seller Listing Actions ("ተሽጧል", "አጥፋ", "Unblock")
+        document.getElementById('myListingsContainer')?.addEventListener('click', (e) => {
+          const soldBtn = e.target.closest('[data-mark-sold]');
+          if (soldBtn) {
+            const id = soldBtn.getAttribute('data-mark-sold');
+            state.listings = state.listings.map((item) =>
+              item.id === id ? { ...item, sold: true } : item
+            );
+            persistListings();
+            renderProfileView();
+            renderHomeFeed();
+            showToast('«ተሽጧል» ተብሎ ተዘግቷል');
+            return;
+          }
+
+          const delBtn = e.target.closest('[data-delete-mine]');
+          if (delBtn) {
+            const id = delBtn.getAttribute('data-delete-mine');
+            state.listings = state.listings.filter((item) => item.id !== id);
+            persistListings();
+            renderProfileView();
+            renderHomeFeed();
+            showToast('ልጥፉ ጠፍቷል');
+          }
+        });
+
+        document.getElementById('blockedItemsContainer')?.addEventListener('click', (e) => {
+          const unblockBtn = e.target.closest('[data-unblock-key]');
+          if (!unblockBtn) return;
+          const key = unblockBtn.getAttribute('data-unblock-key');
+          state.blockedIds = state.blockedIds.filter((k) => k !== key);
+          persistBlocked();
+          renderProfileView();
+          renderHomeFeed();
+          showToast('እገዳው ተከፍቷል');
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>
+```
